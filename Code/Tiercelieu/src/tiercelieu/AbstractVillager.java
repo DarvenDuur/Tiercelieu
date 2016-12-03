@@ -9,14 +9,12 @@ package tiercelieu;
  *
  * @author e_marquer
  */
-public class Tiercelieu {
+public abstract class AbstractVillager extends AbstractPersonnage {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Control control=new Control();
-        control.play();
+    public AbstractVillager(boolean powers) {
+        super(false);
     }
+    
+    //operators
     
 }

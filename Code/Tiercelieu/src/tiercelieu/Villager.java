@@ -7,8 +7,9 @@ package tiercelieu;
 
 /**
  *
- * @author emarq_000
+ * @author e_marquer
  */
-public class Villager {
+public class Villager extends AbstractVillager {
+    
     
 }
