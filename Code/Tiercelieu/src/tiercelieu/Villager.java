@@ -5,11 +5,21 @@
  */
 package tiercelieu;
 
+import java.util.Set;
+
 /**
  *
  * @author e_marquer
  */
 public class Villager extends AbstractVillager {
-    
-    
+
+    public Villager() {
+        
+    }
+
+    //toString
+        @Override
+        public String toString(){
+            return this.faction() + ": comonner (" + this.getPosessor() + ")";
+        }  
 }

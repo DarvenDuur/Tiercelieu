@@ -10,11 +10,8 @@ package tiercelieu;
  * @author e_marquer
  */
 public abstract class AbstractVillager extends AbstractPersonnage {
-
-    public AbstractVillager(boolean powers) {
+    public AbstractVillager() {
         super(false);
     }
-    
-    //operators
     
 }

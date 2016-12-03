@@ -10,5 +10,17 @@ package tiercelieu;
  * @author emarq_000
  */
 public class Control {
+
+    static int askChoices(String[] stringChoices) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    static void display(String you_chose__, String stringChoice) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    void play() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

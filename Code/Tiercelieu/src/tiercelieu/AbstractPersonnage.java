@@ -76,5 +76,7 @@ public abstract class AbstractPersonnage {
         }
         
     //action support
-        public abstract void action();
+        public void action(Set<AbstractPersonnage> personnages) {
+            System.out.println(this.getClass() + " has no action");
+        }
 }
