@@ -5,16 +5,14 @@
  */
 package tiercelieu;
 
-import java.util.Set;
-
 /**
  *
  * @author e_marquer
  */
-public class Villager extends AbstractVillager {
+public class Villager extends AbstractPersonnage {
 
     public Villager() {
-        
+        super(false);
     }
 
     //toString
