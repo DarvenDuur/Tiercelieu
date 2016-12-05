@@ -53,8 +53,8 @@ public abstract class AbstractPersonnage {
             for (int i=0; i<possibleChoices.length; i++) {
                 stringChoices[i]=possibleChoices[i].toString();
             }
-            int answer = Control.askChoices(stringChoices);
-            Control.display("You chose : ", stringChoices[answer]);
+            int answer = Interface.askChoices(stringChoices);
+            Interface.display("You chose : ", stringChoices[answer]);
             return possibleChoices[answer];
         }
         

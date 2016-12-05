@@ -13,4 +13,8 @@ import java.util.HashSet;
  */
 public class Village {
     HashSet<AbstractPersonnage> personnages;
+    
+    public Village(int numberOfPlayer) {
+        
+    }
 }
