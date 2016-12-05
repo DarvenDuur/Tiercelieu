@@ -5,6 +5,7 @@
  */
 package tiercelieu;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -12,46 +13,18 @@ import java.util.HashSet;
  * @author emarq_000
  */
 public class Village {
-    private HashSet<AbstractPersonnage> personnages;
+    private AbstractPersonnage[] personnages;
     private int MODE=0; //0: Base, 1: Medium, 2: Advanced
-    private String[] playerNames;
+    private ArrayList<String> playerNames;
     
-    public Village(int numberOfPlayer) {
-        switch (MODE){
-            case 0: //Base mode (8p dont 2 Ww)
-                playerNames = Control.getPlayerNames(8);
-                for (int i=0; i<2; i++) {
-                    this.personnages.add(new Werewolf());
-                }
-                for (int i=0; i<6; i++) {
-                    this.personnages.add(new Villager());
-                }
-                break;
-
-            case 1: //Medium mode (8-12p dont 2 Ww)
-                playerNames = Control.getPlayerNames(numberOfPlayer);
-                for (int i=0; i<2; i++) {
-                    this.personnages.add(new Werewolf());
-                }
-                for (int i=0; i<numberOfPlayer-2; i++) {
-                    this.personnages.add(new Villager());
-                }
-                break;
-
-            case 2: //Advanced mode (8-12p dont 2 Ww, 1 Sorceress, 1 Cupidon, 1 Thief)
-                playerNames = Control.getPlayerNames(numberOfPlayer);
-                for (int i=0; i<2; i++) {
-                    this.personnages.add(new Werewolf());
-                }
-                this.personnages.add(new Sorceress());
-                this.personnages.add(new Cupidon());
-                this.personnages.add(new Thief());
-                for (int i=0; i<numberOfPlayer-5; i++) {
-                    this.personnages.add(new Villager());
-                }
-                break;
-        }
+    public Village() {
+        
+        Control.getPlayerNames();
+        
+        this.distributeCard();
     }
     
-    
+    private void distributeCard(){
+        
+    }
 }

@@ -19,7 +19,7 @@ public class Control {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    static String[] getPlayerNames(int numberOfPlayer) {
+    static String[] getPlayerNames() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
