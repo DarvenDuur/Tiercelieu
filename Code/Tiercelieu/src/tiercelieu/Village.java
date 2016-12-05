@@ -13,8 +13,16 @@ import java.util.HashSet;
  */
 public class Village {
     HashSet<AbstractPersonnage> personnages;
+    int mode=0; //0: Base
     
     public Village(int numberOfPlayer) {
+        //Base mode (8p dont 2 Ww)
+        String[] Control.getPlayerNames(8);
         
+        //Medium mode (8-12p dont 2 Ww)
+        
+        //Advanced mode (8-12p dont 2 Ww, 1Sorceress, 1Cupidon, 1)
     }
+    
+    
 }

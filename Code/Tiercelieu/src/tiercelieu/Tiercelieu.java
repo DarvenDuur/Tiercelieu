@@ -20,7 +20,7 @@ public class Tiercelieu {
         //Control control=new Control();
         //control.play();
         Villager v=new Villager();
-        v.action(new HashSet());
+        v.action(new HashSet<AbstractPersonnage>());
     }
     
 }
