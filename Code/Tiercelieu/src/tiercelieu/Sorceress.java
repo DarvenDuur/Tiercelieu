@@ -9,6 +9,10 @@ package tiercelieu;
  *
  * @author emarq_000
  */
-public class Sorceress {
+public class Sorceress extends AbstractPersonnage {
+    
+    public Sorceress() {
+        super(true);
+    }
     
 }

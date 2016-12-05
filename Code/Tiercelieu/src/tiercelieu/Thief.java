@@ -9,6 +9,10 @@ package tiercelieu;
  *
  * @author emarq_000
  */
-public class Thief {
+public class Thief extends AbstractPersonnage {
+    
+    public Thief() {
+        super(false);
+    }
     
 }

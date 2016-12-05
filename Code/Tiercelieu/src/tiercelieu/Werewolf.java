@@ -9,6 +9,10 @@ package tiercelieu;
  *
  * @author emarq_000
  */
-public class Werewolf {
+public class Werewolf extends AbstractPersonnage {
+    
+    public Werewolf() {
+        super(true);
+    }
     
 }

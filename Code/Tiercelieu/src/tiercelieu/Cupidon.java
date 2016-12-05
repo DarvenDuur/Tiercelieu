@@ -9,6 +9,10 @@ package tiercelieu;
  *
  * @author emarq_000
  */
-public class Cupidon {
+public class Cupidon extends AbstractPersonnage {
+    
+    public Cupidon() {
+        super(false);
+    }
     
 }
