@@ -11,4 +11,15 @@ package tiercelieu;
  */
 public class GameControl {
     
+    /* ArrayList de villageois */
+    private ArrayList<Villager> villagerList;
+    
+    public GameControl(){
+        Math.Random();
+        villagerList = new ArrayList();
+        
+    }
+    
+    
+    
 }
