@@ -20,6 +20,9 @@ public class GameControl {
         
     }
     
+    while(1){
+        
+    }
     
-    
+
 }
