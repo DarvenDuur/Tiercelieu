@@ -12,8 +12,8 @@ package tiercelieu;
 public class Tiercelieu {
     
     private static Villager[] villagers; //array of villagers
-    private String[] playerNames;
-    private int playerNumber = 8;
+    private static String[] playerNames;
+    private static int playerNumber = 8;
 
     /**
      * @param args the command line arguments
@@ -31,5 +31,22 @@ public class Tiercelieu {
      */
     private static int setNumberOfPlayers() {
         return 8;
+    }
+
+    /**
+     * 
+     */
+    private static void villagerInit() {
+        Scanner scanner= new Scanner();
+        for(int i = 0; i < playerNumber; i++) {
+            
+        }
+    }
+    
+    /**
+     * 
+     */
+    private static void playerNameInit() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
