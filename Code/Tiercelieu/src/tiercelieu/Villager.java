@@ -13,7 +13,7 @@ public class Villager {
     private boolean alive;
     
     /**
-     * 
+     * default
      */
     public Villager() {
         this.alive = true;

@@ -5,21 +5,38 @@
  */
 package tiercelieu;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author emarq_000
  */
 public class GameControl {
     
-    /* ArrayList de villageois */
-    private ArrayList<Villager> villagerList;
+    /* array of villagers */
+    private Villager[] villagers;
+    private String[] playerNames;
     
-    public GameControl(){
-        Math.Random();
-        villagerList = new ArrayList();
-        
+    /**
+     * Basic constructor, without special villagers
+     * @param playerNumber
+     *          number of players, set externally
+     */
+    public GameControl(int playerNumber){
+        Math.random();
+        villagers = new Villager[playerNumber];
+        this.villagerInit();
+        this.playerNameInit();
     }
     
+    //---------- Accessors ----------
+        /**
+         * 
+         */
+        protected String getVillagerName(int index) {
+            return 
+        }
+    //---------- Initialisors ----------
     
     
 }
