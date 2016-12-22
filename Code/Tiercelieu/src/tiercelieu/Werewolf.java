@@ -14,4 +14,8 @@ class Werewolf extends Villager {
     public Werewolf() {
     }
     
+    @Override
+    public String toString(){
+        return ("werewolf");
+    }
 }

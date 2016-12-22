@@ -31,8 +31,12 @@ public class Villager {
     protected void setAlive(boolean newValue){
         this.alive = newValue;
     }
-    protected void kill() {
+    public void kill() {
         this.setAlive(false);
     }
     
+    @Override
+    public String toString(){
+        return ("villager");
+    }
 }
