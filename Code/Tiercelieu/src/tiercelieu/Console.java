@@ -56,13 +56,17 @@ public class Console {
             for (int i = 0; i<choices.length; i++){
                 print(i+") "+choices[i]);
             }
-            String input = scanner.next();
-            for (int i = 0; i<choices.length; i++){
-                if (input.contains(Integer.toString(i))){
-                    return i;
+            int inputInt = -1;
+            String input;
+            while (inputInt < 0){
+                input = scanner.next();
+                for (int i = 0; i<choices.length; i++){
+                    if (input.contains(Integer.toString(i))){
+                        inputInt = i;
+                    }
                 }
             }
-            return -1;
+            return inputInt;
         }
         /**
          * Display choices and allow chosing among them
