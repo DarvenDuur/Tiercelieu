@@ -31,7 +31,7 @@ public class Villager {
      * changes the value of alive
      * @param newValue new boolean value for alive
      */
-    protected void setAlive(boolean newValue){
+    public void setAlive(boolean newValue){
         this.alive = newValue;
     }
     public void kill() {

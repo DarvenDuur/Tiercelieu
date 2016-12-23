@@ -6,6 +6,7 @@
 package tiercelieu;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -19,7 +20,8 @@ public class Tiercelieu {
     private static String[] playerNames; //array of names, will get to change
     private static int playerNumber = 8;
     private static final int WEREWOLF_NUMBER = 2;
-    private static int werewolvesTarget = -1; //index of the player to be killed, -1 for undefined
+    private static int werewolvesTarget = -1; //index of the player to be killed by the werewolves, -1 for undefined
+    private static int witchTarget = -1; //index of the player to be killed, -1 for undefined
     private static boolean isEnded = false; //if true, the game ends
     private static int nights, days; //number of nights/days elapsed since the begining of the game
 
@@ -48,11 +50,14 @@ public class Tiercelieu {
         /**
          * setups roles
          * the werewolves are at the end
+         * the witch is right before the werewolves
          */
         private static void villagerInit() {
-            for (int i = 0; i < playerNumber-WEREWOLF_NUMBER; i++) {
+            for (int i = 0; i < playerNumber-WEREWOLF_NUMBER-1; i++) {
                 villagers[i] = new Villager();
             }
+            
+            villagers[playerNumber-WEREWOLF_NUMBER-1] = new Witch();
 
             //add the Werewolves
             for (int i = playerNumber-WEREWOLF_NUMBER; i < playerNumber; i++) {
@@ -96,14 +101,14 @@ public class Tiercelieu {
         }
         
         /**
-         * use to transform aan array of indexes to an array of names
-         * @param intArray : array of indexes
+         * use to transform an array of indexes to an array of names
+         * @param indexArray : array of indexes
          * @return : array of names
          */
-        private static String[] getNames(int[] intArray){
-            String[] array = new String[intArray.length];
-            for (int i = 0; i < intArray.length; i++) {
-                array[i]= playerNames[intArray[i]];
+        private static String[] getNames(int[] indexArray){
+            String[] array = new String[indexArray.length];
+            for (int i = 0; i < indexArray.length; i++) {
+                array[i]= playerNames[indexArray[i]];
             }
             return array;
         }
@@ -114,7 +119,7 @@ public class Tiercelieu {
          * now shuffeled!
          * @return : list of wrewolwes indexes
          */
-        private static int[] getWerewolvesInt(){
+        private static int[] getWerewolvesIndex(){
             ArrayList<Integer> list = new ArrayList<>();
             for (int i = 0; i < WEREWOLF_NUMBER; i++) {
                 if (villagers[playerNumber-i-1].getAlive()){
@@ -137,7 +142,7 @@ public class Tiercelieu {
          * @return : list of wrewolwes names
          */
         private static String[] getWerewolvesNames(){
-            return (getNames(getWerewolvesInt()));
+            return (getNames(getWerewolvesIndex()));
         }
         
         /**
@@ -145,7 +150,7 @@ public class Tiercelieu {
          * now shuffeled!
          * @return : list of non-wrewolwes indexes
          */
-        private static int[] getNonWerewolvesInt(){
+        private static int[] getNonWerewolvesIndex(){
             ArrayList<Integer> list = new ArrayList<>();
             for (int i = 0; i < playerNumber-WEREWOLF_NUMBER; i++) {
                 if (villagers[i].getAlive()) {
@@ -168,15 +173,23 @@ public class Tiercelieu {
          * @return : list of non-wrewolwes names
          */
         private static String[] getNonWerewolvesNames(){
-            return (getNames(getNonWerewolvesInt()));
+            return (getNames(getNonWerewolvesIndex()));
         }
     
+        /**
+         * 
+         * @return : index of the witch
+         */
+        private static int getWitchIndex(){
+            return playerNumber-WEREWOLF_NUMBER-1;
+        }
+        
         /**
          * Number of live werewolves
          * @return : number of live werewolves
          */
         private static int getWerewolvesNumber(){
-            int[] werewolves = getWerewolvesInt();
+            int[] werewolves = getWerewolvesIndex();
             if (werewolves != null) {
                 return werewolves.length;
             }else{
@@ -188,15 +201,15 @@ public class Tiercelieu {
          * @return : number of live villagers
          */
         private static int getNonWerewolvesNumber(){
-            int[] villagers = getNonWerewolvesInt();
-            if (villagers != null) {
-                return villagers.length;
+            int[] villagersIndex = getNonWerewolvesIndex();
+            if (villagersIndex != null) {
+                return villagersIndex.length;
             }else{
                 return 0;
             }
         }
   
-        private static int[] getAliveInt(){
+        private static int[] getAliveIndex(){
             ArrayList<Integer> list = new ArrayList<>();
             for (int i = 0; i < playerNumber; i++) {
                 if (villagers[i].getAlive()) {
@@ -244,7 +257,13 @@ public class Tiercelieu {
     //Night
         private static void night() {
             werewolvesTarget = -1;
+            witchTarget = -1;
+            
+            Console.print("Werewolves");
             werewolvesAction();
+            
+            Console.print("Witch");
+            witchAction();
             
             nightUpdate();
             victoryUpdate();
@@ -255,11 +274,11 @@ public class Tiercelieu {
          */
         private static void werewolvesAction() {
             String[] werewolves = getWerewolvesNames();
-            int[] villagersInt = getNonWerewolvesInt();
+            int[] villagersInt = getNonWerewolvesIndex();
             String[] villagersName = getNames(villagersInt);
             int[] votes = new int[werewolves.length];
             for (int i = 0; i < werewolves.length; i++){
-                votes[i] = villagersInt[Console.askInt(villagersName, werewolves[i]+": chose your victim!")];
+                votes[i] = villagersInt[Console.askIndex(villagersName, werewolves[i]+": chose your victim!")];
                 Console.clear();
             }
             
@@ -268,14 +287,81 @@ public class Tiercelieu {
             werewolvesTarget = votes[random.nextInt(votes.length)];
         }
         
+        private static void witchAction() {
+            int witchIndex = getWitchIndex();
+            Witch witch = (Witch)villagers[witchIndex];
+            
+            if (witch.getAlive()) { //if the witch is alive
+                String message = playerNames[witchIndex];
+                
+                if (witch.canHeal()) {
+                    message += ", you have a healing potion";
+                    if (witch.canKill()) {
+                        message += " and a poison potion";
+                    }
+                    Console.print(message+" left.");
+                    
+                    Console.print(playerNames[werewolvesTarget]+" has been killed by the werewolves.");
+                    if (Console.askIndex(new String[]{"Yes","No"}, "Resurrect him/her?")==0) {
+                        werewolvesTarget = -1;
+                        witch.useHeal();
+                    }else if (witch.canKill()) {
+                        int[] aliveIndex = getAliveIndex();
+                        //excluding index of victim
+                        int[] targetIndex = new int[aliveIndex.length-1];
+                        int index = 0;
+                        for (int i=0; i<aliveIndex.length; i++) {
+                            if (aliveIndex[i]!=werewolvesTarget) {
+                                targetIndex[index]=aliveIndex[i];
+                                index++;
+                            }
+                        }
+                                
+                        if (Console.askIndex(new String[]{"Yes","No"}, "Kill someone?")==0) {
+                             witchTarget = targetIndex[Console.askIndex(getNames(targetIndex), "Chose your victim!")];
+                             witch.useKill();
+                        }
+                    }
+                    Console.clear();
+                }else if (witch.canKill()) {
+                    message += ", you have a poison potion left.";
+                    Console.print(message);
+                    int[] aliveIndex = getAliveIndex();
+                    
+                    if (Console.askIndex(new String[]{"Yes","No"}, "Kill someone?")==0) {
+                        witchTarget = aliveIndex[Console.askIndex(getNames(aliveIndex), "Chose your victim!")];
+                        witch.useKill();
+                    }
+                    Console.clear();
+                }
+            }
+        }
+        
         /**
          * Kill the dead villagers
          */
         private static void nightUpdate(){
             //if the target is valid
-            if (werewolvesTarget>-1 && villagers[werewolvesTarget].getAlive()) {
+            boolean werewolvesTargetValid, witchTargetValid;
+            werewolvesTargetValid = werewolvesTarget>-1 && villagers[werewolvesTarget].getAlive();
+            witchTargetValid = witchTarget>-1 && villagers[witchTarget].getAlive();
+            
+            if (werewolvesTargetValid && witchTargetValid) {
+                villagers[werewolvesTarget].kill();
+                villagers[witchTarget].kill();
+                Console.print("There were two victims this night: "
+                        +playerNames[werewolvesTarget]+", who was "+villagers[werewolvesTarget]+", and "
+                        +playerNames[witchTarget]+", who was "+villagers[witchTarget]
+                        +". May they rest in peace.");
+            
+            }else if (werewolvesTargetValid) {
                 villagers[werewolvesTarget].kill();
                 Console.print("There was a victim this night: "+playerNames[werewolvesTarget]+", who was "+villagers[werewolvesTarget]+". May (s)he rest in peace.");
+            
+            }else if (witchTargetValid) {
+                villagers[witchTarget].kill();
+                Console.print("There was a victim this night: "+playerNames[witchTarget]+", who was "+villagers[witchTarget]+". May (s)he rest in peace.");
+            
             }else{
                 Console.print("No one died this night!");
             }
@@ -300,7 +386,7 @@ public class Tiercelieu {
          */
         private static int villageVote(){
             String[] villagersName;
-            int[] villagersInt = getAliveInt();
+            int[] villagersInt = getAliveIndex();
             int[] votes = new int[villagersInt.length]; //array of number of votes by villager
             for (int i=0; i<villagersInt.length; i++){
                 votes[i] = 0;
@@ -308,7 +394,7 @@ public class Tiercelieu {
             
             for (int i=0; i<villagersInt.length; i++){
                 villagersName = getNames(villagersInt);
-                votes[Console.askInt(villagersName, "Villager "+villagersName[i]+", please chose who shall die!")] += 1;
+                votes[Console.askIndex(villagersName, "Villager "+villagersName[i]+", please chose who shall die!")] += 1;
                 Console.clear();
             }
             
@@ -332,11 +418,13 @@ public class Tiercelieu {
          */
         private static void gameLoop(){
             while (!isEnded){
-                night();
                 nights++;
+                Console.print("Night "+nights);
+                night();
                 if(!isEnded){
-                    day();
                     days++;
+                    Console.print("Day "+days);
+                    day();
                 }
             }
         }

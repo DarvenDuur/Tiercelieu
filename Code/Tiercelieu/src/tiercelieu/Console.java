@@ -73,7 +73,7 @@ public class Console {
          * @param choices : choices to print
          * @return : index of chosen choice
          */
-        public static int askInt(String[] choices) {
+        public static int askIndex(String[] choices) {
             for (int i = 0; i<choices.length; i++){
                 print(i+") "+choices[i]);
             }
@@ -95,13 +95,13 @@ public class Console {
          * @param header : text to print before the choices are displayed
          * @return : index of chosen choice
          */
-        public static int askInt(String[] choices, String header) {
+        public static int askIndex(String[] choices, String header) {
             print(header);
-            return askInt(choices);
+            return Console.askIndex(choices);
         }
-        public static int askInt(String[] choices, String[] header) {
+        public static int askIndex(String[] choices, String[] header) {
             print(header);
-            return askInt(choices);
+            return Console.askIndex(choices);
         }
 
     //String
