@@ -19,6 +19,9 @@ public class Villager {
         this.alive = true;
     }
     
+    public boolean isWerewolf(){
+        return false;
+    }
     
     public boolean getAlive(){
         return this.alive;

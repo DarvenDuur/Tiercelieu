@@ -6,6 +6,7 @@
 package tiercelieu;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -20,11 +21,14 @@ public class Tiercelieu {
     private static final int WEREWOLF_NUMBER = 2;
     private static int werewolvesTarget = -1; //index of the player to be killed, -1 for undefined
     private static boolean isEnded = false; //if true, the game ends
+    private static int nights, days; //number of nights/days elapsed since the begining of the game
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        nights = 0;
+        days = 0;
         setNumberOfPlayers();
         villagers = new Villager[playerNumber];
         villagerInit();
@@ -38,9 +42,7 @@ public class Tiercelieu {
          * @return number of players
          */
         private static void setNumberOfPlayers() {
-            //Console.print("Enter the number of players:");
-            //playerNumber = Console.askInt();
-            playerNumber = 8;
+            playerNumber = Console.askInt(8,12,"Enter the number of players (between 8 and 12):");
         }
 
         /**
@@ -64,14 +66,9 @@ public class Tiercelieu {
         private static void playerNamesInit() {
             //playerNames = Console.askString(playerNumber, "Input player names :").clone();
             playerNames = new String[playerNumber];
-            playerNames[0] = "player 1";
-            playerNames[1] = "player 2";
-            playerNames[2] = "player 3";
-            playerNames[3] = "player 4";
-            playerNames[4] = "player 5";
-            /*playerNames[5] = "player 6";
-            playerNames[6] = "player 7";
-            playerNames[7] = "player 8";*/
+            for (int i=0; i<playerNumber; i++){
+                playerNames[i] = "player "+(i+1);
+            }
             shuffleNames();
         }
 
@@ -98,9 +95,23 @@ public class Tiercelieu {
             playerNames[i] = temp;
         }
         
+        /**
+         * use to transform aan array of indexes to an array of names
+         * @param intArray : array of indexes
+         * @return : array of names
+         */
+        private static String[] getNames(int[] intArray){
+            String[] array = new String[intArray.length];
+            for (int i = 0; i < intArray.length; i++) {
+                array[i]= playerNames[intArray[i]];
+            }
+            return array;
+        }
+    
     //Getters role based
         /**
          * Gets all werewolves players index
+         * now shuffeled!
          * @return : list of wrewolwes indexes
          */
         private static int[] getWerewolvesInt(){
@@ -110,7 +121,7 @@ public class Tiercelieu {
                     list.add(playerNumber-i-1);
                 }
             }
-            
+            Collections.shuffle(list);
             if (list.size()>0){ //if there is still werewolwes, return them in an array
                 int[] array = new int[list.size()];
                 for (int i = 0; i < list.size(); i++) {
@@ -126,16 +137,12 @@ public class Tiercelieu {
          * @return : list of wrewolwes names
          */
         private static String[] getWerewolvesNames(){
-            int[] intArray = getWerewolvesInt();
-            String[] array = new String[intArray.length];
-            for (int i = 0; i < intArray.length; i++) {
-                array[i]= playerNames[intArray[i]];
-            }
-            return array;
+            return (getNames(getWerewolvesInt()));
         }
         
         /**
          * Gets all non-werewolves players index
+         * now shuffeled!
          * @return : list of non-wrewolwes indexes
          */
         private static int[] getNonWerewolvesInt(){
@@ -145,7 +152,7 @@ public class Tiercelieu {
                     list.add(i);
                 }
             }
-            
+            Collections.shuffle(list);
             if (list.size()>0){ //if there is still werewolwes, return them in an array
                 int[] array = new int[list.size()];
                 for (int i = 0; i < list.size(); i++) {
@@ -161,12 +168,7 @@ public class Tiercelieu {
          * @return : list of non-wrewolwes names
          */
         private static String[] getNonWerewolvesNames(){
-            int[] intArray = getNonWerewolvesInt();
-            String[] array = new String[intArray.length];
-            for (int i = 0; i < intArray.length; i++) {
-                array[i]= playerNames[intArray[i]];
-            }
-            return array;
+            return (getNames(getNonWerewolvesInt()));
         }
     
         /**
@@ -212,14 +214,7 @@ public class Tiercelieu {
                 return null;
             }
         }
-        private static String[] getAliveName(){
-            int[] intArray = getAliveInt();
-            String[] array = new String[intArray.length];
-            for (int i = 0; i < intArray.length; i++) {
-                array[i]= playerNames[intArray[i]];
-            }
-            return array;
-        }
+    
     //Victory
         /**
          * determines if any team won, and end the game
@@ -242,7 +237,7 @@ public class Tiercelieu {
                 Console.print("Villagers alive: "+getNonWerewolvesNumber());
             }
             if (isEnded){
-                Console.print("Time elapsed: ");
+                Console.print("Time elapsed: "+nights+" nights and "+days+" days.");
             }
         }
         
@@ -260,9 +255,9 @@ public class Tiercelieu {
          */
         private static void werewolvesAction() {
             String[] werewolves = getWerewolvesNames();
-            String[] villagersName = getNonWerewolvesNames();
-            int[] votes = new int[werewolves.length];
             int[] villagersInt = getNonWerewolvesInt();
+            String[] villagersName = getNames(villagersInt);
+            int[] votes = new int[werewolves.length];
             for (int i = 0; i < werewolves.length; i++){
                 votes[i] = villagersInt[Console.askInt(villagersName, werewolves[i]+": chose your victim!")];
                 Console.clear();
@@ -270,7 +265,7 @@ public class Tiercelieu {
             
             //chose randomely a target
             Random random = new Random();
-            werewolvesTarget = votes[random.nextInt(werewolves.length)];
+            werewolvesTarget = votes[random.nextInt(votes.length)];
         }
         
         /**
@@ -312,7 +307,7 @@ public class Tiercelieu {
             }
             
             for (int i=0; i<villagersInt.length; i++){
-                villagersName = getAliveName();
+                villagersName = getNames(villagersInt);
                 votes[Console.askInt(villagersName, "Villager "+villagersName[i]+", please chose who shall die!")] += 1;
                 Console.clear();
             }
@@ -338,8 +333,10 @@ public class Tiercelieu {
         private static void gameLoop(){
             while (!isEnded){
                 night();
+                nights++;
                 if(!isEnded){
                     day();
+                    days++;
                 }
             }
         }

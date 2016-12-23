@@ -12,7 +12,7 @@ import java.util.Scanner;
  * @author emarq_000
  */
 public class Console {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     
     //printing
         /**
@@ -48,6 +48,27 @@ public class Console {
             return (scanner.nextInt());
         }
         /**
+         * Gets an input number, between min included and max included, from the console
+         * @param min : minimum value accepted
+         * @param max : maximum value accepted
+         * @param header : text to display before input
+         * @return : inputed number
+         */
+        public static int askInt(int min, int max, String header){
+            print(header);
+            int inputInt = -1;
+            String input;
+            while (inputInt < 0){
+                input = scanner.next();
+                for (int i = max; i>=min; i--){
+                    if (input.contains(Integer.toString(i))){
+                        inputInt = i;
+                    }
+                }
+            }
+            return (inputInt);
+        }
+        /**
          * Display choices and allow chosing among them
          * @param choices : choices to print
          * @return : index of chosen choice
@@ -60,7 +81,7 @@ public class Console {
             String input;
             while (inputInt < 0){
                 input = scanner.next();
-                for (int i = 0; i<choices.length; i++){
+                for (int i = choices.length - 1; i>=0; i--){
                     if (input.contains(Integer.toString(i))){
                         inputInt = i;
                     }
