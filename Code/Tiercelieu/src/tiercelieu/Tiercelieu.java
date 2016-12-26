@@ -15,8 +15,8 @@ import java.util.Random;
  * @author emarq_000
  */
 public class Tiercelieu {
-    //if true, set the name of the players as "player [player number]" (debug use)
-    private static final boolean AUTO_PLAYER_NAMES = false; 
+    //if true, set the name of the players as "player [player number]" in spite of asking the user (debug use)
+    private static final boolean AUTO_PLAYER_NAMES = true; 
     
     private static Villager[] villagers; //array of villagers
     private static String[] playerNames; //array of names
@@ -64,7 +64,7 @@ public class Tiercelieu {
          */
         private static void villagerInit() {
             //add the Villagers
-            for (int i = 0; i < playerNumber-WEREWOLF_NUMBER-3; i++) {
+            for (int i = 0; i < playerNumber-WEREWOLF_NUMBER-2; i++) {
                 villagers[i] = new Villager();
             }
             
@@ -131,7 +131,7 @@ public class Tiercelieu {
          * @param indexArray : array of indexes (between 0 and the number of players-1)
          * @return : array of names
          */
-        private static String[] getNames(int[] indexArray){
+        private static String[] toNames(int[] indexArray){
             String[] array = new String[indexArray.length];
             for (int i = 0; i < indexArray.length; i++) {
                 array[i]= playerNames[indexArray[i]];
@@ -273,7 +273,7 @@ public class Tiercelieu {
          *      if no victory, survivor list
          *      if werewolwes win, short message
          *      if villagers win, short message and survivor list
-         *      [todo] if couple wins, short message
+         *      if couple wins, short message
          * When the game ends, prints the duration of the game (in days and nights)
          * Sets isEnded
          */
@@ -287,12 +287,16 @@ public class Tiercelieu {
                     Console.print("No survivor.");
                 }else{
                     Console.print("Survivors:");
-                    Console.print(getNames(getAliveIndex()));
+                    Console.print(toNames(getAliveIndex()));
                 }
                 
             //werewolves victory
             }else if(getNonWerewolvesNumber()==0){
                 Console.print("Werewolves won!");
+                
+            //couple victory (only if from different factions)
+            }else if(getWerewolvesNumber()==1 && getNonWerewolvesNumber()==1 && villagers[loverIndex1].getAlive() && villagers[loverIndex2].getAlive()){
+                Console.print("The forbidden love was victorious!");
                 
             //no victory
             }else{
@@ -330,22 +334,42 @@ public class Tiercelieu {
         }
         
         /**
-         * Ask the Werewolves for a target (werewolves excluded)
+         * Ask the Werewolves for a target (werewolves excluded, lover excluded)
          * Sets werewolvesTarget
          */
         private static void werewolvesAction() {
-            String[] werewolves = getNames(getWerewolvesIndex());
+            int[] werewolvesIndex = getWerewolvesIndex();
+            String[] werewolvesName = toNames(werewolvesIndex);
             
             //possible targets (werewolves excluded)
-            int[] villagersInt = getNonWerewolvesIndex();
-            String[] villagersName = getNames(villagersInt);
+            int[] villagersIndex = getNonWerewolvesIndex();
+            String[] villagersName = toNames(villagersIndex);
             
             //array of voted targets
-            int[] votes = new int[werewolves.length];
+            int[] votes = new int[werewolvesIndex.length];
             
             //gets the vote of every werewolf
-            for (int i = 0; i < werewolves.length; i++){
-                votes[i] = villagersInt[Console.askIndex(villagersName, werewolves[i]+": chose your victim!")];
+            for (int i = 0; i < werewolvesIndex.length; i++){
+                //if the werewolf is a lover
+                if (werewolvesIndex[i]==loverIndex1 || werewolvesIndex[i]==loverIndex2){
+                    //removes the other lover from possible targets
+                    int[] targetIndex = new int[villagersIndex.length-1];
+                    int index = 0;
+                    for (int j=0; j<villagersIndex.length; i++) {
+                        if (villagersIndex[j]!=werewolvesTarget) {
+                            targetIndex[index]=villagersIndex[j];
+                            index++;
+                        }
+                    }
+                    
+                    //ask for the target
+                    votes[i] = targetIndex[Console.askIndex(toNames(targetIndex), werewolvesName[i]+": chose your victim!")];
+                
+                //if the werewolf is not a lover
+                }else{
+                    //ask for the target
+                    votes[i] = villagersIndex[Console.askIndex(villagersName, werewolvesName[i]+": chose your victim!")];
+                }
                 Console.clear();
             }
             
@@ -405,7 +429,7 @@ public class Tiercelieu {
                         //check if player wants to kill a villager
                         if (Console.askIndex(new String[]{"Yes","No"}, "Kill someone?")==0) {
                             //gets the victim
-                             witchTarget = targetIndex[Console.askIndex(getNames(targetIndex), "Chose your victim!")];
+                             witchTarget = targetIndex[Console.askIndex(toNames(targetIndex), "Chose your victim!")];
                              witch.useKill();
                         }
                     }
@@ -421,7 +445,7 @@ public class Tiercelieu {
                     //check if player wants to kill a villager
                     if (Console.askIndex(new String[]{"Yes","No"}, "Kill someone?")==0) {
                         //gets the victim
-                        witchTarget = aliveIndex[Console.askIndex(getNames(aliveIndex), "Chose your victim!")];
+                        witchTarget = aliveIndex[Console.askIndex(toNames(aliveIndex), "Chose your victim!")];
                         witch.useKill();
                     }
                     Console.clear();
@@ -437,7 +461,7 @@ public class Tiercelieu {
             int[] aliveIndex = getAliveIndex();
             
             //set the first lover
-            loverIndex1 = aliveIndex[Console.askIndex(getNames(aliveIndex), "Chose the first lover:")];
+            loverIndex1 = aliveIndex[Console.askIndex(toNames(aliveIndex), "Chose the first lover:")];
             
             //excluding index of first lover
             int[] newIndex = new int[aliveIndex.length-1];
@@ -450,14 +474,14 @@ public class Tiercelieu {
             }
             
             //set the second lover
-            loverIndex2 = newIndex[Console.askIndex(getNames(newIndex), "Chose the second lover:")];
+            loverIndex2 = newIndex[Console.askIndex(toNames(newIndex), "Chose the second lover:")];
         }
         
         /**
          * Kill the dead villagers
          *      Werewolf victim (if not healed)
          *      Witch victim (if there is)
-         *      [todo] Lovers suicide
+         *      Lovers suicide
          * Show messages about the death
          */
         private static void nightUpdate(){
@@ -488,6 +512,18 @@ public class Tiercelieu {
             //no death (werewolves kill and witch heal)
             }else{
                 Console.print("No one died this night!");
+            }
+            
+            //if the first lover died, kills the second one if alive
+            if (!villagers[loverIndex1].getAlive() && villagers[loverIndex2].getAlive()){
+                villagers[loverIndex2].kill();
+                Console.print(playerNames[loverIndex2]+", "+playerNames[loverIndex1]+"'s lover, commited suicide out of despair!");
+            }
+            
+            //if the second lover died, kills the first one if alive
+            else if (villagers[loverIndex1].getAlive() && !villagers[loverIndex2].getAlive()){
+                villagers[loverIndex1].kill();
+                Console.print(playerNames[loverIndex1]+", "+playerNames[loverIndex2]+"'s lover, commited suicide out of despair!");
             }
         }
         
@@ -524,7 +560,7 @@ public class Tiercelieu {
          */
         private static int villageVote(){
             int[] villagersInt = getAliveIndex();
-            String[] villagersName = getNames(villagersInt);
+            String[] villagersName = toNames(villagersInt);
             
             //array of number of votes by villager
             int[] votes = new int[villagersInt.length];
