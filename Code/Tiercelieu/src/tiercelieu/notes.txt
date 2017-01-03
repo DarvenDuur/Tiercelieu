@@ -1,0 +1,2 @@
+Faire différentes classe héritant de villageois relié au contrôleur,
+ou mettre tout le jeu dans le contrôleur.
