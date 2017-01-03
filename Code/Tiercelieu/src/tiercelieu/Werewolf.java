@@ -5,13 +5,22 @@
  */
 package tiercelieu;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author emarq_000
  */
-public class GameControl {
-    
+class Werewolf extends Villager {
 
+    public Werewolf() {
+    }
+    
+    @Override
+    public boolean isWerewolf(){
+        return true;
+    }
+    
+    @Override
+    public String toString(){
+        return ("werewolf");
+    }
 }

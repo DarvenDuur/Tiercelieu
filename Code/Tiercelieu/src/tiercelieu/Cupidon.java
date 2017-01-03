@@ -5,13 +5,13 @@
  */
 package tiercelieu;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author emarq_000
  */
-public class GameControl {
-    
-
+public class Cupidon extends Villager{
+    @Override
+    public String toString(){
+        return ("cupidon");
+    }
 }

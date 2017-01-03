@@ -13,12 +13,15 @@ public class Villager {
     private boolean alive;
     
     /**
-     * 
+     * default
      */
     public Villager() {
         this.alive = true;
     }
     
+    public boolean isWerewolf(){
+        return false;
+    }
     
     public boolean getAlive(){
         return this.alive;
@@ -28,11 +31,15 @@ public class Villager {
      * changes the value of alive
      * @param newValue new boolean value for alive
      */
-    protected void setAlive(boolean newValue){
+    public void setAlive(boolean newValue){
         this.alive = newValue;
     }
-    protected void kill() {
+    public void kill() {
         this.setAlive(false);
     }
     
+    @Override
+    public String toString(){
+        return ("villager");
+    }
 }
