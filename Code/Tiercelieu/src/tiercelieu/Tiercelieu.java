@@ -11,6 +11,13 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
+ * TO DO
+ * messages to inform love partener
+ * thief
+ */
+
+
+/**
  *
  * @author emarq_000
  */
@@ -26,6 +33,7 @@ public class Tiercelieu {
     private static int werewolvesTarget = -1; //index of the player to be killed by the werewolves, -1 for undefined
     private static int witchTarget = -1; //index of the player to be killed, -1 for undefined
     private static int loverIndex1, loverIndex2; //indexs of the two lovers set by cupidon
+    private static boolean newCupidon = true; //true if the thief has exchanged cupidon card
     
     private static boolean isEnded = false; //if true, the game ends
     private static int nights, days; //number of nights/days elapsed since the begining of the game
@@ -139,6 +147,47 @@ public class Tiercelieu {
             return array;
         }
     
+    //Operations on lovers
+        /**
+         * Shows a message depending of the lover of villager at index
+         * Does not care if villager at index or lover is alive
+         * @param index : index of villager
+         * @return : message if villager has lover, "" otherwise
+         */
+        private static void tellLover(int index){
+            if (index==loverIndex1){
+                Console.print("You are in love with "+playerNames[loverIndex2]+"! Have fun ;)");
+            }else if (index==loverIndex2){
+                Console.print("You are in love with "+playerNames[loverIndex1]+"! Have fun ;)");
+            }
+        }
+    
+        /**
+         * Removes the lovers' index from inputed array of indexes
+         * @param villagersIndex : array of indexes
+         * @return : array of indexes without lovers' index
+         */
+        private static int[] toLoverless(int[] villagersIndex){
+            //find the number of lovers
+            int lovers = 0;
+            for (int i=0; i<villagersIndex.length; i++) {
+                if (villagersIndex[i]==loverIndex1 || villagersIndex[i]==loverIndex2) {
+                    lovers++;
+                }
+            }
+            
+            //removes the lovers
+            int[] loverlessVillagersIndex = new int[villagersIndex.length-lovers];
+            int index = 0;
+            for (int i=0; i<villagersIndex.length; i++) {
+                if (villagersIndex[i]!=loverIndex1 && villagersIndex[i]!=loverIndex2) {
+                    loverlessVillagersIndex[index]=villagersIndex[i];
+                    index++;
+                }
+            }
+            return loverlessVillagersIndex;
+        }
+        
     //Getters role based
         /**
          * Gets index of all live werewolves players
@@ -235,6 +284,14 @@ public class Tiercelieu {
         }
         
         /**
+         * Gets index of the cupidon
+         * @return : index of the cupidon
+         */
+        private static int getCupidonIndex(){
+            return playerNumber-WEREWOLF_NUMBER-12;
+        }
+        
+        /**
          * Gets index of all live players
          * now shuffeled! (to make it harder do know who has wich role)
          * @return : list of non-wrewolwes indexes
@@ -321,6 +378,11 @@ public class Tiercelieu {
             werewolvesTarget = -1;
             witchTarget = -1;
             
+            //cupidon action
+            if(newCupidon){
+                cupidonAction();
+            }
+            
             //werewolves action
             Console.print("Werewolves");
             werewolvesAction();
@@ -352,18 +414,14 @@ public class Tiercelieu {
             for (int i = 0; i < werewolvesIndex.length; i++){
                 //if the werewolf is a lover
                 if (werewolvesIndex[i]==loverIndex1 || werewolvesIndex[i]==loverIndex2){
-                    //removes the other lover from possible targets
-                    int[] targetIndex = new int[villagersIndex.length-1];
-                    int index = 0;
-                    for (int j=0; j<villagersIndex.length; i++) {
-                        if (villagersIndex[j]!=werewolvesTarget) {
-                            targetIndex[index]=villagersIndex[j];
-                            index++;
-                        }
-                    }
+                    //removes the lovers from possible targets
+                    int[] loverlessVillagersIndex = toLoverless(villagersIndex);
+                    
+                    //tell the lover
+                    tellLover(werewolvesIndex[i]);
                     
                     //ask for the target
-                    votes[i] = targetIndex[Console.askIndex(toNames(targetIndex), werewolvesName[i]+": chose your victim!")];
+                    votes[i] = loverlessVillagersIndex[Console.askIndex(toNames(loverlessVillagersIndex), werewolvesName[i]+": chose your victim!")];
                 
                 //if the werewolf is not a lover
                 }else{
@@ -403,6 +461,9 @@ public class Tiercelieu {
                     }
                     Console.print(message+" left.");
                     
+                    //tell the lover
+                    tellLover(witchIndex);
+                    
                     //shows the victim
                     Console.print(playerNames[werewolvesTarget]+" has been killed by the werewolves.");
                     
@@ -440,6 +501,10 @@ public class Tiercelieu {
                     //complete the message with available potion
                     message += ", you have a poison potion left.";
                     Console.print(message);
+                    
+                    //tell the lover
+                    tellLover(witchIndex);
+                    
                     int[] aliveIndex = getAliveIndex();
                     
                     //check if player wants to kill a villager
@@ -458,23 +523,32 @@ public class Tiercelieu {
          * Sets loverIndex1, loverIndex2 (different)
          */
         private static void cupidonAction() {
-            int[] aliveIndex = getAliveIndex();
-            
-            //set the first lover
-            loverIndex1 = aliveIndex[Console.askIndex(toNames(aliveIndex), "Chose the first lover:")];
-            
-            //excluding index of first lover
-            int[] newIndex = new int[aliveIndex.length-1];
-            int index = 0;
-            for (int i=0; i<aliveIndex.length; i++) {
-                if (aliveIndex[i]!=loverIndex1) {
-                    newIndex[index]=aliveIndex[i];
-                    index++;
+            //if cupidon is alive
+            if (villagers[getCupidonIndex()].getAlive()){
+                //if cupidon wish to use its power
+                if (Console.askIndex(new String[]{"Yes","No"},
+                        (loverIndex2 < 0 || loverIndex1 < 0) ? "Do you want to set a couple?" : "Do you want to change the couple?")==0){
+                    newCupidon = false;
+
+                    int[] aliveIndex = getAliveIndex();
+
+                    //set the first lover
+                    loverIndex1 = aliveIndex[Console.askIndex(toNames(aliveIndex), "Chose the first lover:")];
+
+                    //excluding index of first lover
+                    int[] newIndex = new int[aliveIndex.length-1];
+                    int index = 0;
+                    for (int i=0; i<aliveIndex.length; i++) {
+                        if (aliveIndex[i]!=loverIndex1) {
+                            newIndex[index]=aliveIndex[i];
+                            index++;
+                        }
+                    }
+
+                    //set the second lover
+                    loverIndex2 = newIndex[Console.askIndex(toNames(newIndex), "Chose the second lover:")];
                 }
             }
-            
-            //set the second lover
-            loverIndex2 = newIndex[Console.askIndex(toNames(newIndex), "Chose the second lover:")];
         }
         
         /**
@@ -559,25 +633,39 @@ public class Tiercelieu {
          * @return : index of chosen villager
          */
         private static int villageVote(){
-            int[] villagersInt = getAliveIndex();
-            String[] villagersName = toNames(villagersInt);
+            int[] villagersIndex = getAliveIndex();
+            String[] villagersName = toNames(villagersIndex);
             
             //array of number of votes by villager
-            int[] votes = new int[villagersInt.length];
-            for (int i=0; i<villagersInt.length; i++){
+            int[] votes = new int[villagersIndex.length];
+            for (int i=0; i<villagersIndex.length; i++){
                 votes[i] = 0;
             }
             
-            for (int i=0; i<villagersInt.length; i++){
-                //adds 1 at votes[index], index beeing the answer of the Cinsole.askIndex()
-                votes[Console.askIndex(villagersName, "Villager "+villagersName[i]+", please chose who shall die!")] += 1;
+            for (int i=0; i<villagersIndex.length; i++){
+                //if the villager is a lover
+                if (villagersIndex[i]==loverIndex1 || villagersIndex[i]==loverIndex2){
+                    //removes the lovers from possible targets
+                    int[] loverlessVillagersIndex = toLoverless(villagersIndex);
+                    
+                    //tell the lover
+                    tellLover(villagersIndex[i]);
+                    
+                    votes[Console.askIndex(toNames(loverlessVillagersIndex), "Villager "+villagersName[i]+", please chose who shall die!")] += 1;
+                
+                //if the villager is not a lover
+                }else{
+                    //adds 1 at votes[index], index beeing the answer of the Cinsole.askIndex()
+                    votes[Console.askIndex(villagersName, "Villager "+villagersName[i]+", please chose who shall die!")] += 1;
+                }
+                
                 Console.clear();
             }
             
             //analyze the votes to find who has the most votes
             int maxVotes = 0;
             Random random = new Random();
-            for (int i=1; i<villagersInt.length; i++){
+            for (int i=1; i<villagersIndex.length; i++){
                 if (votes[i]>votes[maxVotes]){
                     maxVotes = i;
                     
@@ -589,7 +677,7 @@ public class Tiercelieu {
                 }
             }
             
-            return villagersInt[maxVotes];
+            return villagersIndex[maxVotes];
         }
         
     //Game loop
@@ -599,9 +687,6 @@ public class Tiercelieu {
          * Sets nights, days
          */
         private static void gameLoop(){
-            //first night only
-            cupidonAction();
-            
             while (!isEnded){
                 nights++;
                 Console.print("Night "+nights);
