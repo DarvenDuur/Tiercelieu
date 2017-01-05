@@ -12,7 +12,25 @@ import java.util.Scanner;
  * @author emarq_000
  */
 public class Console {
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
+    private static final int LINES_CLEAR = 10;
+    
+    //simple confirm
+        /**
+         * Just wait for any entry
+         * @line : text to print before input
+         */
+         public static void waitContinue(String line){
+            print(line);
+            SCANNER.next();
+         }
+    
+        /**
+         * Just wait for any entry
+         */
+         public static void waitContinue(){
+            waitContinue("Input anything to continue :");
+         }
     
     //printing
         /**
@@ -33,7 +51,7 @@ public class Console {
         }
         
         public static void clear() {
-            for (int i=0; i<10; i++) {
+            for (int i=0; i<LINES_CLEAR; i++) {
                 print("");
             }
         }
@@ -45,7 +63,7 @@ public class Console {
          */
         public static int askInt(){
             print("Input a number :");
-            return (scanner.nextInt());
+            return (SCANNER.nextInt());
         }
         /**
          * Gets an input number, between min included and max included, from the console
@@ -59,7 +77,7 @@ public class Console {
             int inputInt = -1;
             String input;
             while (inputInt < 0){
-                input = scanner.next();
+                input = SCANNER.next();
                 for (int i = max; i>=min; i--){
                     if (input.contains(Integer.toString(i))){
                         inputInt = i;
@@ -80,7 +98,7 @@ public class Console {
             int inputInt = -1;
             String input;
             while (inputInt < 0){
-                input = scanner.next();
+                input = SCANNER.next();
                 for (int i = choices.length - 1; i>=0; i--){
                     if (input.contains(Integer.toString(i))){
                         inputInt = i;
@@ -113,7 +131,7 @@ public class Console {
             print("Input some text :");
             String input = "";
             while (!(input.length() > 0)){
-                input = scanner.next();
+                input = SCANNER.next();
             }
             return (input);
         }
@@ -131,7 +149,7 @@ public class Console {
             for (int i = 0; i<inputs.length; i++) {
                 inputs[i] = "";
                 while (!(inputs[i].length() > 0)){
-                    inputs[i] = scanner.next();
+                    inputs[i] = SCANNER.next();
                 }
             }
             return (inputs);

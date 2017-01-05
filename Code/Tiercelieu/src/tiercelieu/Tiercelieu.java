@@ -12,8 +12,9 @@ import java.util.Random;
 
 /**
  * TO DO
- * messages to inform love partener
  * thief
+ * add before action "The ... wakes up" + waitContinue"
+ * add after action "The ... goes back to sleep"
  */
 
 
@@ -24,11 +25,14 @@ import java.util.Random;
 public class Tiercelieu {
     //if true, set the name of the players as "player [player number]" in spite of asking the user (debug use)
     private static final boolean AUTO_PLAYER_NAMES = true; 
+    //if true, will show the number of survivors of each faction at the end of the turn
+    private static final boolean SHOW = true; 
     
     private static Villager[] villagers; //array of villagers
     private static String[] playerNames; //array of names
     private static int playerNumber; //number of players
     private static final int WEREWOLF_NUMBER = 2; //number of werevolves
+    private static final int ADDITONAL_ROLES_NUMBER = 2; //number of undistributed cards
     
     private static int werewolvesTarget = -1; //index of the player to be killed by the werewolves, -1 for undefined
     private static int witchTarget = -1; //index of the player to be killed, -1 for undefined
@@ -50,6 +54,7 @@ public class Tiercelieu {
         villagers = new Villager[playerNumber];
         villagerInit();
         playerNamesInit();
+        swowPlayerRole();
         gameLoop();
     }
     
@@ -109,6 +114,23 @@ public class Tiercelieu {
             shuffleNames();
         }
 
+        /**
+         * For each player show player name, and after asking for confirmation,
+         * show the role of the player
+         */
+        private static void swowPlayerRole() {
+            //randomised array, to avoid deducting role by position
+            int[] playerIndex = getAliveIndex();
+            
+            //for each player
+            for (int i=0; i<playerNumber; i++){
+                Console.print("Player "+playerNames[playerIndex[i]]);
+                Console.waitContinue("Input anything to see your class");
+                Console.print("You are "+villagers[playerIndex[i]].toString());
+                Console.waitContinue();
+                Console.clear();
+            }
+        }
     //Operations on names
         /**
          * Basic way to shuffle the name
@@ -288,7 +310,7 @@ public class Tiercelieu {
          * @return : index of the cupidon
          */
         private static int getCupidonIndex(){
-            return playerNumber-WEREWOLF_NUMBER-12;
+            return playerNumber-WEREWOLF_NUMBER-2;
         }
         
         /**
@@ -378,6 +400,11 @@ public class Tiercelieu {
             werewolvesTarget = -1;
             witchTarget = -1;
             
+            //thief action (first night only)
+            if(nights==1){
+                preliminaryThiefAction();
+            }
+            
             //cupidon action
             if(newCupidon){
                 cupidonAction();
@@ -390,6 +417,11 @@ public class Tiercelieu {
             //witch action
             Console.print("Witch");
             witchAction();
+            
+            //thief action (first night only)
+            if(nights==1){
+                thiefAction();
+            }
             
             nightUpdate();
             victoryUpdate();
@@ -622,7 +654,7 @@ public class Tiercelieu {
             victoryUpdate();
             
             //waiting for the user to read
-            Console.askString(1,"Type something to continue");
+            Console.waitContinue() ;
         }
         
         /**
@@ -698,4 +730,6 @@ public class Tiercelieu {
                 }
             }
         }
+
+    
 }
