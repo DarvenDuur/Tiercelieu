@@ -19,7 +19,7 @@ public class Thief extends Villager {
 
 /**
  * todo
- *      add 2 undistributed cards
+ *      add 2 undistributed cards (unatributed cards are alive)
  *      swow the two cards to the thief at the first turn
  *          if the two cards are werewolves, thief must change to werewolf
  *          else, the thief can chose to change to one of the cards, or stay a thief

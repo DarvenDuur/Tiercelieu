@@ -13,8 +13,7 @@ import java.util.Random;
 /**
  * TO DO
  * thief
- * add before action "The ... wakes up" + waitContinue"
- * add after action "The ... goes back to sleep"
+ * remove unnafected from getAlives
  */
 
 
@@ -25,8 +24,8 @@ import java.util.Random;
 public class Tiercelieu {
     //if true, set the name of the players as "player [player number]" in spite of asking the user (debug use)
     private static final boolean AUTO_PLAYER_NAMES = true; 
-    //if true, will show the number of survivors of each faction at the end of the turn
-    private static final boolean SHOW = true; 
+    //if true, will show the number of survivors of each faction at the end of each turn
+    private static final boolean SHOW_SURVIVORS = true; 
     
     private static Villager[] villagers; //array of villagers
     private static String[] playerNames; //array of names
@@ -110,6 +109,9 @@ public class Tiercelieu {
                 playerNames = Console.askString(playerNumber, "Input player names :").clone();
             }
             
+            //set roles that won't be afectated to a player
+            setUnafected();
+            
             //role distribution
             shuffleNames();
         }
@@ -131,6 +133,7 @@ public class Tiercelieu {
                 Console.clear();
             }
         }
+    
     //Operations on names
         /**
          * Basic way to shuffle the name
@@ -380,8 +383,10 @@ public class Tiercelieu {
             //no victory
             }else{
                 isEnded = false;
-                Console.print("Werwolves alive: "+getWerewolvesNumber());
-                Console.print("Villagers alive: "+getNonWerewolvesNumber());
+                if (SHOW_SURVIVORS){
+                    Console.print("Werwolves alive: "+getWerewolvesNumber());
+                    Console.print("Villagers alive: "+getNonWerewolvesNumber());
+                }
             }
             
             //prints game duration
@@ -405,10 +410,15 @@ public class Tiercelieu {
                 preliminaryThiefAction();
             }
             
+            //tells the game master that the turn has begun
+            Console.print("Cupidon wakes up");
+            Console.waitContinue();
             //cupidon action
             if(newCupidon){
                 cupidonAction();
             }
+            //tells the game master that the turn has ended
+            Console.print("Cupidon goes back to sleep");
             
             //werewolves action
             Console.print("Werewolves");
@@ -432,6 +442,10 @@ public class Tiercelieu {
          * Sets werewolvesTarget
          */
         private static void werewolvesAction() {
+            //tells the game master that the turn has begun
+            Console.print("The werewolves wake up");
+            Console.waitContinue(); 
+            
             int[] werewolvesIndex = getWerewolvesIndex();
             String[] werewolvesName = toNames(werewolvesIndex);
             
@@ -466,6 +480,9 @@ public class Tiercelieu {
             //chose randomely a target, to clear eventual ex aequo
             Random random = new Random();
             werewolvesTarget = votes[random.nextInt(votes.length)];
+            
+            //tells the game master that the turn has ended
+            Console.print("The werewolves go back to sleep");
         }
         
         /**
@@ -482,6 +499,10 @@ public class Tiercelieu {
             
             //if the witch is alive
             if (witch.getAlive()) {
+                //tells the game master that the turn has begun
+                Console.print("The witch wakes up");
+                Console.waitContinue();
+                
                 //begin the message with the name of the witch
                 String message = playerNames[witchIndex];
                 
@@ -547,6 +568,8 @@ public class Tiercelieu {
                     }
                     Console.clear();
                 }
+                //tells the game master that the turn has ended
+                Console.print("The witch goes bacck to sleep.");
             }
         }
         
@@ -579,6 +602,58 @@ public class Tiercelieu {
 
                     //set the second lover
                     loverIndex2 = newIndex[Console.askIndex(toNames(newIndex), "Chose the second lover:")];
+                    
+                    //show the two lovers to the game master
+                    Console.print(playerNames[loverIndex1]+" and "+playerNames[loverIndex2]+" are now lovers!");
+                }
+            }
+        }
+        
+        /**
+         * Allows the thief to chose a card in the undistributed cards.
+         * If all the werewolves are undistributed
+         */
+        private static void preliminaryThiefAction() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        /**
+         * Allows the thief to exchange the cards of two playes
+         */
+        private static void thiefAction() {
+            int thiefIndex = getThiefIndex();
+            
+            //if the thief is alive
+            if (villagers[thiefIndex].getAlive()){
+                //if the thief is affected to a player
+                if (isAffected(thiefIndex)){
+                    //if the thief wish to use its power
+                    if(Console.askIndex(new String[]{"Yes","No"}, "Do you want to exange two catds?")==0){
+
+                        int[] aliveIndex = getAliveIndex();
+
+                        //set the first victim of the thief
+                        int victimIndex1 = aliveIndex[Console.askIndex(toNames(aliveIndex), "Chose the first victim:")];
+
+                        //excluding index of first victim of the thief
+                        int[] newIndex = new int[aliveIndex.length-1];
+                        int index = 0;
+                        for (int i=0; i<aliveIndex.length; i++) {
+                            if (aliveIndex[i]!=victimIndex1) {
+                                newIndex[index]=aliveIndex[i];
+                                index++;
+                            }
+                        }
+
+                        //set the second victim of the thief
+                        int victimIndex2 = newIndex[Console.askIndex(toNames(newIndex), "Chose the second victim:")];
+                    }
+                
+                //if the thief is not affected to a player, print messages as if he was
+                }else{
+                    Console.print("Do you want to exange two catds?");
+                    Console.print("Chose the first victim:");
+                    Console.print("Chose the second victim:");
                 }
             }
         }
@@ -730,6 +805,16 @@ public class Tiercelieu {
                 }
             }
         }
+
+    private static int getThiefIndex() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static boolean isAffected(int cupidonIndex) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+        
 
     
 }
