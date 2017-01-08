@@ -37,6 +37,7 @@ public class Tiercelieu {
     private static int witchTarget = -1; //index of the player to be killed, -1 for undefined
     private static int loverIndex1, loverIndex2; //indexs of the two lovers set by cupidon
     private static boolean newCupidon = true; //true if the thief has exchanged cupidon card
+    private static int[] unaffectedIndex; //indexes of unnaffected roles
     
     private static boolean isEnded = false; //if true, the game ends
     private static int nights, days; //number of nights/days elapsed since the begining of the game
@@ -75,42 +76,57 @@ public class Tiercelieu {
          * Sets villagers
          */
         private static void villagerInit() {
+            
+            int rolesNumber = playerNumber + ADDITONAL_ROLES_NUMBER;
+            
             //add the Villagers
-            for (int i = 0; i < playerNumber-WEREWOLF_NUMBER-2; i++) {
+            for (int i = 0; i < rolesNumber-WEREWOLF_NUMBER-2; i++) {
                 villagers[i] = new Villager();
             }
             
             //add the Witch
-            villagers[playerNumber-WEREWOLF_NUMBER-1] = new Witch();
+            villagers[rolesNumber-WEREWOLF_NUMBER-1] = new Witch();
             
             //add the Cupidon
-            villagers[playerNumber-WEREWOLF_NUMBER-2] = new Cupidon();
+            villagers[rolesNumber-WEREWOLF_NUMBER-2] = new Cupidon();
+            
+            //add the Thief
+            villagers[rolesNumber-WEREWOLF_NUMBER-3] = new Thief();
 
             //add the Werewolves
-            for (int i = playerNumber-WEREWOLF_NUMBER; i < playerNumber; i++) {
+            for (int i = rolesNumber-WEREWOLF_NUMBER; i < rolesNumber; i++) {
                 villagers[i] = new Werewolf();
             }
         }
-
+        
         /**
          * Get (or gernerates) the player names and atribute roles
          * Sets playerNames
          */
         private static void playerNamesInit() {
+            playerNames = new String[playerNumber+ADDITONAL_ROLES_NUMBER];
+                
             //generates the names automaticaly ...
             if (AUTO_PLAYER_NAMES){
-                playerNames = new String[playerNumber];
                 for (int i=0; i<playerNumber; i++){
                     playerNames[i] = "player "+(i+1);
                 }
                 
             //... or ask the names by input
             }else{
-                playerNames = Console.askString(playerNumber, "Input player names :").clone();
+                String[] tempPlayerNames = Console.askString(playerNumber, "Input player names :").clone();
+                for (int i=0; i<playerNumber; i++){
+                    playerNames[i] = tempPlayerNames[i];
+                }
+            }
+            
+            //set names for unnaffected roles ass null
+            for (int i=playerNumber; i<playerNames.length; i++){
+                playerNames[i] = null;
             }
             
             //set roles that won't be afectated to a player
-            setUnafected();
+            setUnaffected();
             
             //role distribution
             shuffleNames();
@@ -141,9 +157,14 @@ public class Tiercelieu {
          */
         private static void shuffleNames() {
             Random random = new Random();
-            for (int i = playerNames.length - 1; i > 0; i--)
-            {
+            //suffulling player names, ignoring names for unnaffected roles
+            for (int i = playerNumber - 1; i > 0; i--) {
                 swapNames(i, random.nextInt(i + 1));
+            }
+            
+            //set the two null names to unaffected positions
+            for (int i = ADDITONAL_ROLES_NUMBER; i > 0; i--) {
+                swapNames(unaffectedIndex[i-1], playerNames.length - i);
             }
         }
 
@@ -213,6 +234,55 @@ public class Tiercelieu {
             return loverlessVillagersIndex;
         }
         
+    //Operations on affectations
+        /**
+         * Returns true if the index is in unaffectedIndex
+         * @param index : index to search
+         * @return : true if index is unaffected, false elseway
+         */
+        private static boolean isAffected(int index) {
+            Arrays.sort(unaffectedIndex);
+            return (Arrays.binarySearch(unaffectedIndex, index)>=0);
+        }
+        
+        /**
+         * Setup wich roles are unaffected to players
+         * Sets unnaffectedIndex
+         */
+        private static void setUnaffected(){
+            Random random = new Random();
+            if (ADDITONAL_ROLES_NUMBER==2){
+                unaffectedIndex = new int[2];
+                unaffectedIndex[0] = random.nextInt(playerNumber+ADDITONAL_ROLES_NUMBER);
+                unaffectedIndex[1] = random.nextInt(playerNumber+ADDITONAL_ROLES_NUMBER);
+                while (unaffectedIndex[1]==unaffectedIndex[0]){
+                    unaffectedIndex[1] = random.nextInt(playerNumber+ADDITONAL_ROLES_NUMBER);
+                }
+                
+            //if the number of unaffected roles is different from 0
+            }else{
+                unaffectedIndex = new int[ADDITONAL_ROLES_NUMBER];
+                for (int i = 0; i < ADDITONAL_ROLES_NUMBER; i++){
+                    Arrays.sort(unaffectedIndex);
+                    int unaffected = random.nextInt(playerNumber+ADDITONAL_ROLES_NUMBER);
+
+                    //while the new index is found in unaffectedIndex, chose a new one
+                    while (Arrays.binarySearch(unaffectedIndex, unaffected)>=0){
+                        unaffected = random.nextInt(playerNumber+ADDITONAL_ROLES_NUMBER);
+                    }
+                    unaffectedIndex[i] = unaffected;
+                }
+            }
+        }
+        
+        /**
+         * Returns index of unnaffected roles
+         * @return : array of unnaffected roles' indexs
+         */
+        private static int[] getUnnaffected(){
+            return unaffectedIndex;
+        }
+    
     //Getters role based
         /**
          * Gets index of all live werewolves players
@@ -810,9 +880,7 @@ public class Tiercelieu {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private static boolean isAffected(int cupidonIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
         
 
