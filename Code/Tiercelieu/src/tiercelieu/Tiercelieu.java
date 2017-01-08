@@ -22,25 +22,33 @@ import java.util.Random;
  * @author emarq_000
  */
 public class Tiercelieu {
-    //if true, set the name of the players as "player [player number]" in spite of asking the user (debug use)
-    private static final boolean AUTO_PLAYER_NAMES = true; 
-    //if true, will show the number of survivors of each faction at the end of each turn
-    private static final boolean SHOW_SURVIVORS = true; 
+    //DEBUG
+        //if true, set the name of the players as "player [player number]" 
+        //in spite of asking the user (debug use)
+        private static final boolean AUTO_PLAYER_NAMES = true; 
+        //if true, set the unaffected roles to the werewolves positon (debug use)
+        private static final boolean FORCE_UNAFFECTED_WEREWOLVES = false; 
+        //if true, skip presentation of roles (debug use)
+        private static final boolean SKIP_ROLES_PRESENTATION = true; 
     
-    private static Villager[] villagers; //array of villagers
-    private static String[] playerNames; //array of names
-    private static int playerNumber; //number of players
-    private static final int WEREWOLF_NUMBER = 2; //number of werevolves
-    private static final int ADDITONAL_ROLES_NUMBER = 2; //number of undistributed cards
-    
-    private static int werewolvesTarget = -1; //index of the player to be killed by the werewolves, -1 for undefined
-    private static int witchTarget = -1; //index of the player to be killed, -1 for undefined
-    private static int loverIndex1, loverIndex2; //indexs of the two lovers set by cupidon
-    private static boolean newCupidon = true; //true if the thief has exchanged cupidon card
-    private static int[] unaffectedIndex; //indexes of unnaffected roles
-    
-    private static boolean isEnded = false; //if true, the game ends
-    private static int nights, days; //number of nights/days elapsed since the begining of the game
+    //VARIABLES & CONSTANTS
+        //if true, will show the number of survivors of each faction at the end of each turn
+        private static final boolean SHOW_SURVIVORS = true; 
+
+        private static Villager[] villagers; //array of villagers
+        private static String[] playerNames; //array of names
+        private static int playerNumber; //number of players
+        private static final int WEREWOLF_NUMBER = 2; //number of werevolves
+        private static final int ADDITONAL_ROLES_NUMBER = 2; //number of undistributed cards
+
+        private static int werewolvesTarget = -1; //index of the player to be killed by the werewolves, -1 for undefined
+        private static int witchTarget = -1; //index of the player to be killed, -1 for undefined
+        private static int loverIndex1, loverIndex2; //indexs of the two lovers set by cupidon
+        private static boolean newCupidon = true; //true if the thief has exchanged cupidon card
+        private static int[] unaffectedIndex; //indexes of unnaffected roles
+
+        private static boolean isEnded = false; //if true, the game ends
+        private static int nights, days; //number of nights/days elapsed since the begining of the game
 
     /**
      * @param args the command line arguments
@@ -137,16 +145,18 @@ public class Tiercelieu {
          * show the role of the player
          */
         private static void swowPlayerRole() {
-            //randomised array, to avoid deducting role by position
-            int[] playerIndex = getAliveIndex();
-            
-            //for each player
-            for (int i=0; i<playerNumber; i++){
-                Console.print("Player "+playerNames[playerIndex[i]]);
-                Console.waitContinue("Input anything to see your class");
-                Console.print("You are "+villagers[playerIndex[i]].toString());
-                Console.waitContinue();
-                Console.clear();
+            if (!SKIP_ROLES_PRESENTATION){
+                //randomised array, to avoid deducting role by position
+                int[] playerIndex = getAliveIndex();
+
+                //for each player
+                for (int i=0; i<playerNumber; i++){
+                    Console.print("Player "+playerNames[playerIndex[i]]);
+                    Console.waitContinue("Input anything to see your role.");
+                    Console.print("You are "+villagers[playerIndex[i]].toString());
+                    Console.waitContinue();
+                    Console.clear();
+                }
             }
         }
     
@@ -191,6 +201,15 @@ public class Tiercelieu {
                 array[i]= playerNames[indexArray[i]];
             }
             return array;
+        }
+        
+        /**
+         * Transforms an index to the corresponding name
+         * @param indexArray : index
+         * @return : name
+         */
+        private static String toName(int index){
+            return playerNames[index];
         }
     
     //Operations on lovers
@@ -273,6 +292,15 @@ public class Tiercelieu {
                     unaffectedIndex[i] = unaffected;
                 }
             }
+            
+            //if FORCE_UNAFFECTED_WEREWOLVES is true,
+            //force the werewolves to be in the unaffected roles
+            if (FORCE_UNAFFECTED_WEREWOLVES){
+                int[] werewolves = getWerewolvesIndex();
+                for (int i = 0; i < werewolves.length && i < unaffectedIndex.length; i++){
+                    unaffectedIndex[i] = werewolves[i];
+                }
+            }
         }
         
         /**
@@ -288,15 +316,16 @@ public class Tiercelieu {
          * @return : true if all werewolves ar unaffected, false elseway
          */
         private static boolean areWerewolvesUnafected(){
-            int[] werewolves = getWerewolvesIndex();
             boolean test = true;
             
-            for (int werewolf : werewolves){
-                if (isAffected(werewolf)){
+            //if at least a werwolf is affected
+            for (int i = 0; i < villagers.length; i++) {
+                if ((villagers[i] instanceof Werewolf) && isAffected(i)){
                     test = false;
                     break;
                 }
             }
+            
             return test;
         }
         
@@ -421,7 +450,6 @@ public class Tiercelieu {
             
             //get all live players
             for (int i = 0; i < villagers.length; i++) {
-                    System.out.println(i+" "+villagers[i]+" alive"+villagers[i].getAlive()+" affected"+isAffected(i));
                 if (villagers[i].getAlive() && isAffected(i)) {
                     list.add(i);
                 }
@@ -592,7 +620,7 @@ public class Tiercelieu {
             Witch witch = (Witch)villagers[witchIndex];
             
             //if the witch is alive
-            if (witch.getAlive()) {
+            if (witch.getAlive() && isAffected(witchIndex)) {
                 //tells the game master that the turn has begun
                 Console.print("The witch wakes up");
                 Console.waitContinue();
@@ -672,12 +700,15 @@ public class Tiercelieu {
          * Sets loverIndex1, loverIndex2 (different)
          */
         private static void cupidonAction() {
+            int cupidonIndex = getCupidonIndex();
+            
             //if cupidon is alive
-            if (villagers[getCupidonIndex()].getAlive()){
+            if (villagers[cupidonIndex].getAlive() && isAffected(cupidonIndex)){
                 //tells the game master that the turn has begun
                 Console.print("Cupidon wakes up");
                 Console.waitContinue();
-            
+                
+                Console.print(toName(cupidonIndex));
                 //if cupidon wish to use its power
                 if (Console.askIndex(new String[]{"Yes","No"},
                         (loverIndex2 < 0 || loverIndex1 < 0) ? "Do you want to set a couple?" : "Do you want to change the couple?")==0){
@@ -704,6 +735,7 @@ public class Tiercelieu {
                     //show the two lovers to the game master
                     Console.print(playerNames[loverIndex1]+" and "+playerNames[loverIndex2]+" are now lovers!");
                 }
+                Console.clear();
                 //tells the game master that the turn has ended
                 Console.print("Cupidon goes back to sleep");
             }
@@ -717,6 +749,7 @@ public class Tiercelieu {
         private static void preliminaryThiefAction() {
             //tells the game master that the turn has begun
             Console.print("The thief wakes up");
+            Console.waitContinue();
             
             int thiefIndex = getThiefIndex();
             
@@ -724,19 +757,27 @@ public class Tiercelieu {
             if (villagers[thiefIndex].getAlive()){
                 //if the thief is affected to a player
                 if (isAffected(thiefIndex)){
+                    Console.print(toName(thiefIndex));
+                    
                     //prints unaffected roles
-                    Console.print("Thothe roles are unnaffected:");
+                    Console.print("Those roles are unnaffected:");
                     int[] unaffected = getUnaffected();
-                    for (String name : toNames(unaffected)){
-                        Console.print(name);
+                    for (int i : unaffected){
+                        Console.print(villagers[i].toString());
                     }
                     
                     //if the werewolves are unaffected, force the player to exchange roles with one of them
                     if (areWerewolvesUnafected()){
                         Console.print("Do you want to take one of the catds? (you don't have the choice anyway)");
                         
-                        //invert position with first werewolf
-                        swapNames(getWerewolvesIndex()[0],thiefIndex);
+                        for (int i = 0; i < unaffectedIndex.length; i++) {
+                            if (villagers[unaffectedIndex[i]] instanceof Werewolf){
+                                //invert position with unaffected werewolf
+                                swapNames(unaffectedIndex[i],thiefIndex);
+                                unaffectedIndex[i] = thiefIndex;
+                                break;
+                            }
+                        }
                         
                     //otherwise ask the thief if he wishes to use its power to exchange his card with one of the undistibuted cards
                     }else if(Console.askIndex(new String[]{"Yes","No"}, "Do you want to take one of the catds?")==0){
@@ -744,6 +785,9 @@ public class Tiercelieu {
                         
                         //invert position with chosen role
                         swapNames(unaffected[choice],thiefIndex);
+                        unaffectedIndex[choice] = thiefIndex;
+                                
+                        Console.print("You are now the "+villagers[choice].toString());
                     }
                 //if the thief is not affected to a player, print messages as if he was
                 }else{
@@ -751,6 +795,8 @@ public class Tiercelieu {
                     Console.print("Wich one do you want to take?");
                 }
             }
+            Console.clear();
+            
             //tells the game master that the turn has ended
             Console.print("The thief goes back to sleep");
         }
@@ -839,16 +885,18 @@ public class Tiercelieu {
                 Console.print("No one died this night!");
             }
             
-            //if the first lover died, kills the second one if alive
-            if (!villagers[loverIndex1].getAlive() && villagers[loverIndex2].getAlive()){
-                villagers[loverIndex2].kill();
-                Console.print(playerNames[loverIndex2]+", "+playerNames[loverIndex1]+"'s lover, commited suicide out of despair!");
-            }
-            
-            //if the second lover died, kills the first one if alive
-            else if (villagers[loverIndex1].getAlive() && !villagers[loverIndex2].getAlive()){
-                villagers[loverIndex1].kill();
-                Console.print(playerNames[loverIndex1]+", "+playerNames[loverIndex2]+"'s lover, commited suicide out of despair!");
+            if (loverIndex1 > 0 && loverIndex2 > 0){
+                //if the first lover died, kills the second one if alive
+                if (!villagers[loverIndex1].getAlive() && villagers[loverIndex2].getAlive()){
+                    villagers[loverIndex2].kill();
+                    Console.print(playerNames[loverIndex2]+", "+playerNames[loverIndex1]+"'s lover, commited suicide out of despair!");
+                }
+
+                //if the second lover died, kills the first one if alive
+                else if (villagers[loverIndex1].getAlive() && !villagers[loverIndex2].getAlive()){
+                    villagers[loverIndex1].kill();
+                    Console.print(playerNames[loverIndex1]+", "+playerNames[loverIndex2]+"'s lover, commited suicide out of despair!");
+                }
             }
         }
         
@@ -950,10 +998,4 @@ public class Tiercelieu {
             }
         }
 
-
-    
-
-        
-
-    
 }

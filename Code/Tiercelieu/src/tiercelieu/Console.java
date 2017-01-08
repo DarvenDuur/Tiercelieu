@@ -13,7 +13,7 @@ import java.util.Scanner;
  */
 public class Console {
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static final int LINES_CLEAR = 10;
+    private static final int LINES_CLEAR = 2;
     
     //simple confirm
         /**
