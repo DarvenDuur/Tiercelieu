@@ -5,13 +5,6 @@ package entity;
  */
 public class Werewolf extends Villager {
 
-    /**
-     * Werewolf's constructor
-     * @param i : index of player
-     */
-    public Werewolf(int i){
-        super(i);
-    }
     
     @Override
     public String toString(){

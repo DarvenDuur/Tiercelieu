@@ -1,7 +1,7 @@
 package entity;
+
 import setting.Config;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 
 
 /**
@@ -16,11 +16,8 @@ public class Villager {
      * 's constructor
      * @param i : index of player
      */
-    public Villager(int i) {
-    	
+    public Villager() {
         this.alive = true;
-        
-        namesInit(i);
     }
 
 
@@ -76,6 +73,10 @@ public class Villager {
     
     public String getName(){
     	return name;
+    }
+    
+    public void setName(int i){
+        namesInit(i);
     }
     
     @Override

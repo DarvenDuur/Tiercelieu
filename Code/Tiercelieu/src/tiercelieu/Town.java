@@ -17,7 +17,6 @@ import entity.Cupidon;
 public class Town{
 
     private ArrayList <Villager> villagers; //list of all villager
-    private Villager[] unnafectedVillagers;
     private Controller controller; //link with the controller
 
     private String lover1, lover2; //lovers, set by cupidon
@@ -46,48 +45,40 @@ public class Town{
     	for(int i = 0; i < nbPlayer; i++){
     		pos.add(i);
     	}
-        
-    	//shuffling positions
-        Collections.shuffle(pos);
 
         nbPlayer = playerNumber + Config.ADDITONAL_ROLES_NUMBER;
         
-            //adding the Villagers
-            for (int i = 0; i < nbPlayer-Config.WEREWOLF_NUMBER-2; i++) {
-                villagers.add(new Villager(pos.get(0)));
-                pos.remove(0);
-            }
-            
-            //adding the Witch
-            villagers.add(new Witch(pos.get(0)));
-            pos.remove(0);
-            
-            //adding the Cupidon
-            villagers.add(new Cupidon(pos.get(0)));
-            pos.remove(0);
-            
-            //adding the Thief
-            villagers.add(new Thief(pos.get(0)));
-            pos.remove(0);
-            
-            //adding the Werewolves
-            for (int i = nbPlayer-Config.WEREWOLF_NUMBER; i < nbPlayer; i++) {
-            	villagers.add(new Werewolf(pos.get(0)));
-            	pos.remove(0);
-            }
+        //adding the Witch
+        villagers.add(new Witch());
+        
+        //adding the Cupidon
+        villagers.add(new Cupidon());
+        
+        //adding the Thief
+        villagers.add(new Thief());
+        
+        //adding the Werewolves
+        for (int i = nbPlayer-Config.WEREWOLF_NUMBER; i < nbPlayer; i++) {
+        	villagers.add(new Werewolf());
+        }
         
         //randomisation of roles order
         Collections.shuffle(villagers);
         
-        for(Villager u : unnafectedVillagers){
-            u = villagers.get(0);
-            villagers.remove(0);
+        //adding the Villagers
+        for (int i = 0; i < nbPlayer-Config.WEREWOLF_NUMBER-2; i++) {
+            villagers.add(new Villager());
         }
         
-        //setting names
+        //shuffling positions
+        Collections.shuffle(pos);
+        
+        for(Villager v : villagers){
+            v.setName(pos.get(0));
+            pos.remove(0);
+        }
     }
 
-//roles actions
     /**
      * get werewolves' vote
      */
@@ -158,22 +149,6 @@ public class Town{
     	}
     }
 
-    protected void thiefPreliminary(){
-        for(Villager v : villagers){
-            if(v instanceof Thief){
-                ((Thief) v).preliminaryTurn(villagers, unnafectedVillagers);
-            }
-    	}
-    }
-    
-    protected void thief(){
-        for(Villager v : villagers){
-            if(v instanceof Thief){
-                ((Thief) v).turn(villagers);
-            }
-    	}
-    }
-    
     /**
      * get villagers' vote
      */
@@ -185,15 +160,6 @@ public class Town{
         }
     }
     
-    /**
-     * Todo Thief preliminary
-     */
-    
-    /**
-     * Todo Thief
-     */
-    
-//death
     /**
      * kill the villager at position i
      * @param i : position of villager to kill
@@ -226,7 +192,6 @@ public class Town{
 		}
     }
     
-//victory check    
     /**
      * check if any werewolf is alive
      */
@@ -263,7 +228,6 @@ public class Town{
     	return false;
     }
     
-//lover operations
     /**
      * return true if villager is a lover
      * @param v : villager to check

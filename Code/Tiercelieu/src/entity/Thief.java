@@ -1,43 +1,47 @@
 package entity;
 
+import java.util.ArrayList;
 import setting.Config;
 
 /**
  * @author emarq_000, Claudel_Adrien
  */
 public class Thief extends Villager {
-	
-    /**
-     * 's constructor
-     * @param i : index of player
-     */
-	public Thief(int i){
-		super(i);
-	}
+
     
         /**
          * Allows the thief to chose a card in the undistributed cards.
          * If all the werewolves are undistributed, 
          * force the player to exchange roles with one of them.
          */
-        private void preliminaryTurn() {
+        public void preliminaryTurn(ArrayList <Villager> villagers, Villager[] unnafectedVillagers) {
             //tells the game master that the turn has begun
             Config.print("The thief wakes up");
             
-            int thiefIndex = getThiefIndex();
-            
+            /*
             //if the thief is alive
             if (this.isAlive()){
+                boolean isAffected = true;
+                for (Villager u : unnafectedVillagers){
+                    if (u instanceof Thief){
+                        isAffected =false;
+                    }
+                }
+                
                 //if the thief is affected to a player
-                if (isAffected(thiefIndex)){
-                    Console.print(toName(thiefIndex));
+                if (isAffected){
+                    Config.print(this.name);
                     
                     //prints unaffected roles
-                    Console.print("Those roles are unnaffected:");
-                    int[] unaffected = getUnaffected();
-                    for (int i : unaffected){
-                        Console.print(villagers[i].toString());
+                    Config.print("Those roles are unnaffected:\n");
+                    for (int i = 0; i<unnafectedVillagers.length; i++){
+                        Config.print(i+". "+unnafectedVillagers[i]+"\n");
                     }
+                    
+                    int rep = 0;
+                    do{
+                        rep = Config.askInt();
+                    }while(rep < 0 && rep >= unnafectedVillagers.length); //while input is different from available answers
                     
                     //if the werewolves are unaffected, force the player to exchange roles with one of them
                     if (areWerewolvesUnafected()){
@@ -68,7 +72,7 @@ public class Thief extends Villager {
                     Config.print("Wich one do you want to take?");
                 }
             }
-            
+            */
             //tells the game master that the turn has ended
             Config.print("The thief goes back to sleep");
         }
@@ -76,9 +80,8 @@ public class Thief extends Villager {
         /**
          * Allows the thief to exchange the cards of two playes
          */
-        private static void turn() {
-            int thiefIndex = getThiefIndex();
-            
+        public void turn(ArrayList <Villager> villagers) {
+            /*
             //if the thief is alive
             if (villagers[thiefIndex].getAlive()){
                 //tells the game master that the turn has begun
@@ -118,6 +121,7 @@ public class Thief extends Villager {
                 //tells the game master that the turn has ended
                 Console.print("The thief goes back to sleep");
             }
+*/
         }
         
     @Override

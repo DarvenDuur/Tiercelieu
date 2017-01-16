@@ -16,9 +16,7 @@ public class Witch extends Villager {
      * Witch's constructor
      * @param i : index of player
      */
-    public Witch(int i) {
-        super(i);
-        
+    public Witch() {
         healPotion = true;
         killPotion = true;
     }
@@ -40,13 +38,7 @@ public class Witch extends Villager {
             int rep = 0;
             do{
                 Config.print("1: Oui \n2: Non\n");
-                try{
-                    rep = (int)Config.SCANNER.nextInt();
-                }catch(InputMismatchException | NumberFormatException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }
-                // Si la saisie n'est pas un nombre
-                
+                rep = Config.askInt();
             }while(rep != 1 && rep != 2); //while input is different from available answers
             
             //if answer is "Oui"

@@ -9,14 +9,6 @@ import setting.Config;
  */
 public class Cupidon extends Villager{
 	
-    /**
-     * 's constructor
-     * @param i : index of player
-     */
-	public Cupidon(int i){
-		super(i);
-	}
-	
     
     /**
      * Cupidon's vote (first night)
