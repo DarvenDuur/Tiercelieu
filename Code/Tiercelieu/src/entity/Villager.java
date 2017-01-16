@@ -79,6 +79,10 @@ public class Villager {
         namesInit(i);
     }
     
+    protected void setName(String name){
+        this.name = name;
+    }
+    
     @Override
     public String toString(){
         return ("Villageois");

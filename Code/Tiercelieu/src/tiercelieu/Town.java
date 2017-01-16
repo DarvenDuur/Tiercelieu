@@ -17,6 +17,7 @@ import entity.Cupidon;
 public class Town{
 
     private ArrayList <Villager> villagers; //list of all villager
+    private Villager[] unnaffectedVillagers;
     private Controller controller; //link with the controller
 
     private String lover1, lover2; //lovers, set by cupidon
@@ -72,6 +73,12 @@ public class Town{
         
         //shuffling positions
         Collections.shuffle(pos);
+        
+        unnaffectedVillagers = new Villager[Config.ADDITONAL_ROLES_NUMBER];
+        for(Villager u : unnaffectedVillagers){
+            u= villagers.get(0);
+            villagers.remove(0);
+        }
         
         for(Villager v : villagers){
             v.setName(pos.get(0));
@@ -158,6 +165,22 @@ public class Town{
     	for(Villager v : villagers){
             controller.setVote(v.vote(villagers));
         }
+    }
+    
+    public void thiefPreliminary(){
+        for(Villager v : villagers){
+            if(v instanceof Thief){
+    		((Thief) v).preliminaryTurn(villagers, unnaffectedVillagers);
+            }
+    	}
+    }
+    
+    public void thief(){
+        for(Villager v : villagers){
+            if(v instanceof Thief){
+    		((Thief) v).turn(villagers);
+            }
+    	}
     }
     
     /**

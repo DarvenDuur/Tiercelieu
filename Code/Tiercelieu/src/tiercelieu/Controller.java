@@ -44,6 +44,10 @@ public class Controller {
     private void night(){
     	initVote(); //initialize votes array
     	
+        if(nights == 1){
+            town.thiefPreliminary();
+        }
+        
         //setting the lovers
     	if(nights == 1){
     		town.cupidon();
@@ -57,6 +61,10 @@ public class Controller {
     		town.die(getVote()); //if the witch does'nt heal the victim, the victim die
     	}else{
             town.witchPoison();
+        }
+        
+        if(nights == 1){
+            town.thief();
         }
     	
     	initVote(); //initialize votes array
