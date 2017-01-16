@@ -17,6 +17,7 @@ import entity.Cupidon;
 public class Town{
 
     private ArrayList <Villager> villagers; //list of all villager
+    private Villager[] unnafectedVillagers;
     private Controller controller; //link with the controller
 
     private String lover1, lover2; //lovers, set by cupidon
@@ -77,8 +78,13 @@ public class Town{
         
         //randomisation of roles order
         Collections.shuffle(villagers);
+        
+        for(Villager u : unnafectedVillagers){
+            u = ;
+        }
     }
 
+//roles actions
     /**
      * get werewolves' vote
      */
@@ -149,6 +155,22 @@ public class Town{
     	}
     }
 
+    protected void thiefPreliminary(){
+        for(Villager v : villagers){
+            if(v instanceof Thief){
+                ((Thief) v).preliminaryTurn(villagers, unnafectedVillagers);
+            }
+    	}
+    }
+    
+    protected void thief(){
+        for(Villager v : villagers){
+            if(v instanceof Thief){
+                ((Thief) v).turn(villagers);
+            }
+    	}
+    }
+    
     /**
      * get villagers' vote
      */
@@ -160,6 +182,15 @@ public class Town{
         }
     }
     
+    /**
+     * Todo Thief preliminary
+     */
+    
+    /**
+     * Todo Thief
+     */
+    
+//death
     /**
      * kill the villager at position i
      * @param i : position of villager to kill
@@ -192,6 +223,7 @@ public class Town{
 		}
     }
     
+//victory check    
     /**
      * check if any werewolf is alive
      */
@@ -228,6 +260,7 @@ public class Town{
     	return false;
     }
     
+//lover operations
     /**
      * return true if villager is a lover
      * @param v : villager to check
