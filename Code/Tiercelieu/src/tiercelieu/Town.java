@@ -80,8 +80,11 @@ public class Town{
         Collections.shuffle(villagers);
         
         for(Villager u : unnafectedVillagers){
-            u = ;
+            u = villagers.get(0);
+            villagers.remove(0);
         }
+        
+        //setting names
     }
 
 //roles actions
