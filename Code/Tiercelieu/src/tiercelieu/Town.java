@@ -86,14 +86,14 @@ public class Town{
     	Config.print("Les loups-garous se reveillent !\n");
     	
     	for(Villager v : villagers){
-    		if(v instanceof Werewolf){
-                    //prevent werwolf to kill it's lover
-                    if (isLover(v)){
-                        controller.setVote(((Werewolf)v).turn(getLoverless()));
-                    }else{
-                        controller.setVote(((Werewolf)v).turn(villagers));
-                    }
-    		}
+            if(v instanceof Werewolf){
+                //prevent werwolf to kill it's lover
+                if (isLover(v)){
+                    controller.setVote(((Werewolf)v).vote(getLoverless()));
+                }else{
+                    controller.setVote(((Werewolf)v).vote(villagers));
+                }
+            }
     	}
     }
 

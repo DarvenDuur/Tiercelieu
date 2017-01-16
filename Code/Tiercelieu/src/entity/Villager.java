@@ -59,16 +59,8 @@ public class Villager {
 		// Saisie du vote
 		int input = -1;
 		do{
-			try{
-				input = Config.SCANNER.nextInt();
-			}catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }
-		}
-        // tant que le vote ne corespond a aucun villageois
-		while(input < 0 && input > villager.size());
+                    input = Config.askInt();
+		}while(input < 0 && input > villager.size());// tant que le vote ne corespond a aucun villageois
 		
 		return input;
 	}

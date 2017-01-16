@@ -1,4 +1,5 @@
 package setting;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -29,4 +30,19 @@ public class Config {
     public static void print(String s){
     	System.out.print(s);
     }
+    
+    /**
+         * Gets an input number from the console
+         * @return : inputed number
+         */
+        public static int askInt(){
+            print("\nInput a number :");
+            try{
+                return (SCANNER.nextInt());
+            }catch (InputMismatchException e){
+                print("Bad input\n");
+                SCANNER.next(); //clear scanner
+                return -1;
+            }
+        }
 }

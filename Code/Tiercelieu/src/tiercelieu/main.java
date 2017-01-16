@@ -14,13 +14,8 @@ public class main {
 		int nb = 0;
 		
 		do{
-                    try{
-			nb = Config.SCANNER.nextInt();
-                    }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }
+                    nb = Config.askInt();
+                    
 		}while(nb < 8 || nb > 12);
 		
         //initialize the controler

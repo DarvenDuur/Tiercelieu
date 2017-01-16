@@ -42,11 +42,11 @@ public class Witch extends Villager {
                 Config.print("1: Oui \n2: Non\n");
                 try{
                     rep = (int)Config.SCANNER.nextInt();
-                }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
+                }catch(InputMismatchException | NumberFormatException e){// Si la saisie n'est pas un nombre 
 			System.out.println("Veuillez entrer un nombre !");
                     }
+                // Si la saisie n'est pas un nombre
+                
             }while(rep != 1 && rep != 2); //while input is different from available answers
             
             //if answer is "Oui"
@@ -74,13 +74,8 @@ public class Witch extends Villager {
             int rep = 0;
             do{
                 Config.print("1: Oui \n2: Non\n");
-                try{
-                    rep = (int)Config.SCANNER.nextInt();
-                }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }
+                rep = Config.askInt();
+                
             }while(rep != 1 && rep != 2); //while input is different from available answers
             
             //if answer is "Oui"
@@ -99,11 +94,11 @@ public class Witch extends Villager {
                 do{
                     try{
                         input = Config.SCANNER.nextInt();
-                    }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
+                    }catch(InputMismatchException | NumberFormatException e){// Si la saisie n'est pas un nombre 
 			System.out.println("Veuillez entrer un nombre !");
                     }
+                    // Si la saisie n'est pas un nombre
+                    
                 }while(input < 0 && input > villagers.size()); //while input is different from available answers
                 
                 //return index of witch's victim
@@ -115,6 +110,6 @@ public class Witch extends Villager {
     
     @Override
     public String toString(){
-        return ("Witch");
+        return ("Sorciere");
     }
 }
