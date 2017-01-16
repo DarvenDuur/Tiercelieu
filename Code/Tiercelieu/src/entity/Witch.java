@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 import setting.Config;
 
@@ -34,11 +35,18 @@ public class Witch extends Villager {
         //if the witch can use her potion
         if(healPotion){
             //ask if she want to use it
-            Config.print("Voulez-vous sauver " + villagers.get(vote).getName() + " ?\n");
+            
+            Config.print(villagers.get(vote).getName() + "a ete tue cette nuit.\nVoulez-vous le/la sauver ?\n");
             int rep = 0;
             do{
                 Config.print("1: Oui \n2: Non\n");
-                rep = (int)Config.SCANNER.nextInt();
+                try{
+                    rep = (int)Config.SCANNER.nextInt();
+                }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
+                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
+                    }
             }while(rep != 1 && rep != 2); //while input is different from available answers
             
             //if answer is "Oui"
@@ -66,7 +74,13 @@ public class Witch extends Villager {
             int rep = 0;
             do{
                 Config.print("1: Oui \n2: Non\n");
-                rep = (int)Config.SCANNER.nextInt();
+                try{
+                    rep = (int)Config.SCANNER.nextInt();
+                }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
+                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
+                    }
             }while(rep != 1 && rep != 2); //while input is different from available answers
             
             //if answer is "Oui"
@@ -85,8 +99,10 @@ public class Witch extends Villager {
                 do{
                     try{
                         input = Config.SCANNER.nextInt();
-                    }catch(NumberFormatException e){ //if input is not a number
-                        System.out.println("Veuillez entrez un nombre !");
+                    }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
+                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
                     }
                 }while(input < 0 && input > villagers.size()); //while input is different from available answers
                 

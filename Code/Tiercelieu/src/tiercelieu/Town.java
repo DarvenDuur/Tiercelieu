@@ -106,11 +106,11 @@ public class Town{
     	Config.print("\n");
 
     	for(Villager v : villagers){
-    		if(v instanceof Witch){
-    			//controller.getVote() is the villager targeted by the werewolves
-    			//calls Witch.heal()
-    	    	return ((Witch) v).heal(villagers, controller.getVote());
-    		}
+            if(v instanceof Witch){
+                //controller.getVote() is the villager targeted by the werewolves
+                //calls Witch.heal()
+                return ((Witch) v).heal(villagers, controller.getVote());
+            }
     	}
     	
     	//if the witch is not alive
@@ -126,9 +126,9 @@ public class Town{
 
     	int answer = -1;
     	for(Villager v : villagers){
-    		if(v instanceof Witch){
+            if(v instanceof Witch){
     	    	answer = ((Witch) v).poison(villagers);
-    		}
+            }
     	}
     	
     	if(answer != -1){
@@ -152,7 +152,6 @@ public class Town{
     	}
     }
 
-    
     /*
      * get villagers' vote
      */
@@ -163,7 +162,6 @@ public class Town{
             controller.setVote(v.vote(villagers));
         }
     }
-    
     
     /*
      * kill the villager at position i
@@ -180,7 +178,7 @@ public class Town{
     	if(villagers.get(i).getName() == lover1){
 			for(int y = 0; y < villagers.size(); y++){
 				if(villagers.get(y).getName() == lover2){
-					Config.print(villagers.get(y).toString() + " est mort de desespoir.\n");
+					Config.print(villagers.get(y).toString() + ", son amant, est mort de desespoir.\n");
         			villagers.remove(y);
 				}
 			}
@@ -190,13 +188,12 @@ public class Town{
         else if(villagers.get(i).getName() == lover2){
 			for(int y = 0; y < villagers.size(); y++){
 				if(villagers.get(y).getName() == lover1){
-					Config.print(villagers.get(y).toString() + " est mort de desespoir.\n");
+					Config.print(villagers.get(y).toString() + ", son amant, est mort de desespoir.\n");
         			villagers.remove(y);
 				}
 			}
 		}
     }
-    
     
     /*
      * check if any werewolf is alive

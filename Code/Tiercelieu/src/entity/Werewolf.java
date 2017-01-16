@@ -2,6 +2,7 @@ package entity;
 
 import setting.Config;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 /**
  * @author emarq_000, Claudel_Adrien
@@ -36,11 +37,11 @@ public class Werewolf extends Villager {
         do{
             try{
                 input = Config.SCANNER.nextInt();
-            }
-            // Si la saisie n'est pas un nombre 
-			catch(NumberFormatException e){
-				System.out.println("Veuillez entrer un nombre !");
-	        }
+            }catch(InputMismatchException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
+                    }catch(NumberFormatException e){// Si la saisie n'est pas un nombre 
+			System.out.println("Veuillez entrer un nombre !");
+                    }
 		}
         // tant que le vote ne corespond a aucun villageois
 		while(input < 0 && input > villager.size());
