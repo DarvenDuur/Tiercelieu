@@ -42,10 +42,10 @@ public class Villager {
     	}
     }
     
-    /*
+    /**
      *  Tour de villageois
      */
-	public int vote(ArrayList<Villager> villager) {
+    public int vote(ArrayList<Villager> villager) {
     	
     	Config.print(this.getName() + " qui voulez-vous tuer ?\n");
     	
@@ -53,7 +53,7 @@ public class Villager {
 		for (int i = 0; i < villager.size(); i++){
 			Villager v = villager.get(i);
 			
-			System.out.println(i + ". " + v.getName() + " : " + v);
+			System.out.println(i + ". " + v.getName());
 		}
 		
 		// Saisie du vote

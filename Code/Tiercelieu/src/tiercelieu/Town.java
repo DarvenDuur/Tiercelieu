@@ -33,10 +33,10 @@ public class Town{
         villagerInit(playerNumber);
     }
 
-	/*
-	 * villagers' initialisation
-	 * @param playerNumber : number of players
-	 */
+    /**
+     * villagers' initialisation
+     * @param playerNumber : number of players
+     */
     private void villagerInit(int playerNumber) {
         int nbPlayer = playerNumber+Config.WEREWOLF_NUMBER+1;
         
@@ -79,7 +79,7 @@ public class Town{
         Collections.shuffle(villagers);
     }
 
-    /*
+    /**
      * get werewolves' vote
      */
     protected void werewolf(){
@@ -97,8 +97,7 @@ public class Town{
     	}
     }
 
-    
-    /*
+    /**
      * calls Witch's healing methode
      * @return : true if the witch use her healing power, false otherwise
      */
@@ -117,8 +116,7 @@ public class Town{
     	return false;
     }
 
-    
-    /*
+    /**
      * calls Witch's poisoning methode
      */
     protected void witchPoison(){
@@ -136,8 +134,7 @@ public class Town{
     	}
     }
 
-    
-    /*
+    /**
      * ask Cupidon to form a couple
      */
     public void cupidon(){
@@ -152,7 +149,7 @@ public class Town{
     	}
     }
 
-    /*
+    /**
      * get villagers' vote
      */
     protected void villager(){
@@ -163,26 +160,26 @@ public class Town{
         }
     }
     
-    /*
+    /**
      * kill the villager at position i
      * @param i : position of villager to kill
      */
     protected void die(int i){
     	//prints the death of the villager
-    	Config.print(villagers.get(i).getName() + " : " + villagers.get(i) + " a ete tue.\n");
+    	Config.print(villagers.get(i).getName() + " : " + villagers.get(i) +" a ete tue.\n");
         
         //remove the villager
-   		villagers.remove(i);
+        villagers.remove(i);
     
-		//if the villager who die is the first lover, kill the second one
+        //if the villager who die is the first lover, kill the second one
     	if(villagers.get(i).getName() == lover1){
-			for(int y = 0; y < villagers.size(); y++){
-				if(villagers.get(y).getName() == lover2){
-					Config.print(villagers.get(y).toString() + ", son amant, est mort de desespoir.\n");
-        			villagers.remove(y);
-				}
-			}
-		}
+            for(int y = 0; y < villagers.size(); y++){
+		if(villagers.get(y).getName() == lover2){
+                    Config.print(villagers.get(y).toString() + ", son amant, est mort de desespoir.\n");
+        		villagers.remove(y);
+                }
+            }
+        }
 		
 		//if the villager who die is the second lover, kill the first one
         else if(villagers.get(i).getName() == lover2){
@@ -195,7 +192,7 @@ public class Town{
 		}
     }
     
-    /*
+    /**
      * check if any werewolf is alive
      */
     public boolean wolfCheck(){
@@ -207,8 +204,7 @@ public class Town{
     	return false;
     }
     
-    
-    /*
+    /**
      * check if any non-werewolf villager is alive
      */
     public boolean villagerCheck(){
@@ -220,7 +216,7 @@ public class Town{
     	return false;
     }
     
-    /*
+    /**
      * check if any non-lover villager is alive
      */
     public boolean loverCheck(){

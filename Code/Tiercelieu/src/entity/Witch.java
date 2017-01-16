@@ -86,19 +86,14 @@ public class Witch extends Villager {
                 for (int i = 0; i < villagers.size(); i++){
                     Villager v = villagers.get(i);
                     
-                    System.out.println(i + ". " + v.getName() + " : " + v);
+                    System.out.println(i + ". " + v.getName());
                 }
 
                 //vote input
                 int input = -1;
                 do{
-                    try{
-                        input = Config.SCANNER.nextInt();
-                    }catch(InputMismatchException | NumberFormatException e){// Si la saisie n'est pas un nombre 
-			System.out.println("Veuillez entrer un nombre !");
-                    }
-                    // Si la saisie n'est pas un nombre
-                    
+                    input = Config.askInt();
+                                        
                 }while(input < 0 && input > villagers.size()); //while input is different from available answers
                 
                 //return index of witch's victim

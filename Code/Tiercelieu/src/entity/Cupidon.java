@@ -41,7 +41,7 @@ public class Cupidon extends Villager{
                 for (int i = 0; i < villager.size(); i++){
                     Villager v = villager.get(i);
 			
-                    System.out.println(i + ". " + v.getName() + " : " + v);
+                    System.out.println(i + ". " + v.getName());
                 }
                 input = Config.askInt();
                 
@@ -53,7 +53,7 @@ public class Cupidon extends Villager{
                     if (i!=input){
                         Villager v = villager.get(i);
 
-                        System.out.println(i + ". " + v.getName() + " : " + v);
+                        System.out.println(i + ". " + v.getName());
                     }
                 }
                 input2=Config.askInt();
